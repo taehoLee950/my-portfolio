@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "home": "Home",
+    "techStack": "Tech Stack",
+    "projects": "Projects",
+    "learning": "Learning",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Developing with passion,",
+    "name": "Taeho Lee",
+    "subtitle": "here."
+  },
+  "techStack": {
+    "title": "Tech Stack",
+    "backend": {
+      "title": "Backend",
+      "description": "Server development with Node.js, Express, Sequelize"
+    },
+    "frontend": {
+      "title": "Frontend",
+      "description": "State management with React, Redux Toolkit"
+    },
+    "database": {
+      "title": "Database",
+      "description": "MySQL concurrency control and Redis optimization planned"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "viewDetail": "View Detail",
+    "troubleshooting": "Troubleshooting",
+    "improvement": "Improvement"
+  },
+  "learning": {
+    "title": "Learning Technology Use Cases",
+    "subtitle": "Core Improvement Logic"
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send",
+    "sending": "Sending...",
+    "success": "Message sent successfully.",
+    "error": "Failed to send message."
+  }
+}

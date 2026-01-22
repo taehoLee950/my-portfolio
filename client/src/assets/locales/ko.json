@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "home": "홈",
+    "techStack": "기술 스택",
+    "projects": "프로젝트",
+    "learning": "학습 사례",
+    "contact": "연락하기"
+  },
+  "hero": {
+    "title": "룰루랄라 개발하는",
+    "name": "이태호",
+    "subtitle": "입니다."
+  },
+  "techStack": {
+    "title": "기술 스택",
+    "backend": {
+      "title": "Backend",
+      "description": "Node.js, Express, Sequelize를 활용한 서버 개발"
+    },
+    "frontend": {
+      "title": "Frontend",
+      "description": "React, Redux Toolkit을 통한 상태 관리"
+    },
+    "database": {
+      "title": "Database",
+      "description": "MySQL 동시성 제어 및 Redis 고도화 예정"
+    }
+  },
+  "projects": {
+    "title": "프로젝트",
+    "viewDetail": "상세 보기",
+    "troubleshooting": "문제 해결",
+    "improvement": "개선 사항"
+  },
+  "learning": {
+    "title": "학습 기술 사용 사례",
+    "subtitle": "핵심 개선 로직"
+  },
+  "contact": {
+    "title": "연락하기",
+    "name": "이름",
+    "email": "이메일",
+    "message": "메시지",
+    "send": "보내기",
+    "sending": "전송 중...",
+    "success": "메시지가 성공적으로 전송되었습니다.",
+    "error": "메시지 전송에 실패했습니다."
+  }
+}
