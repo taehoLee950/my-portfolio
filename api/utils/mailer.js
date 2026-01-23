@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendInquiryEmail = async (fromEmail, message) => {
+export const sendInquiryEmail = async (fromEmail, message) => {
   try {
     const mailOptions = {
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
@@ -32,5 +32,3 @@ const sendInquiryEmail = async (fromEmail, message) => {
     return { success: false, error: error.message };
   }
 };
-
-module.exports = { sendInquiryEmail };

@@ -1,5 +1,5 @@
-const asyncHandler = require('../utils/asyncHandler');
-const skillCaseService = require('../services/skillCaseService');
+import asyncHandler from '../utils/asyncHandler.js';
+import skillCaseService from '../services/skillCaseService.js';
 
 const skillCaseController = {
   // 모든 사례 조회
@@ -57,4 +57,4 @@ const skillCaseController = {
   }),
 };
 
-module.exports = skillCaseController;
+export default skillCaseController;

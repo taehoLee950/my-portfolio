@@ -1,6 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sequelize');
-const Project = require('./Project');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/sequelize.js';
+import Project from './Project.js';
 
 const ProjectImage = sequelize.define(
   'ProjectImage',
@@ -46,4 +46,4 @@ const ProjectImage = sequelize.define(
 ProjectImage.belongsTo(Project, { foreignKey: 'project_id' });
 Project.hasMany(ProjectImage, { foreignKey: 'project_id', as: 'images' });
 
-module.exports = ProjectImage;
+export default ProjectImage;

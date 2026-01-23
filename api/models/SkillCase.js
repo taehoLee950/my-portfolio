@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sequelize');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/sequelize.js';
 
 const SkillCase = sequelize.define(
   'SkillCase',
@@ -67,4 +67,4 @@ const SkillCase = sequelize.define(
   }
 );
 
-module.exports = SkillCase;
+export default SkillCase;

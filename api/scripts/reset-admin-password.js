@@ -1,7 +1,7 @@
-require('dotenv').config();
-const bcrypt = require('bcrypt');
-const sequelize = require('../config/sequelize');
-const Admin = require('../models/Admin');
+import 'dotenv/config';
+import bcrypt from 'bcrypt';
+import sequelize from '../config/sequelize.js';
+import Admin from '../models/Admin.js';
 
 const resetPassword = async () => {
   const args = process.argv.slice(2);
@@ -42,4 +42,4 @@ const resetPassword = async () => {
   }
 };
 
-resetPassword();
+await resetPassword();

@@ -1,6 +1,8 @@
-require('dotenv').config();
-const bcrypt = require('bcrypt');
-const adminRepository = require('../repositories/adminRepository');
+import 'dotenv/config';
+import bcrypt from 'bcrypt';
+
+import sequelize from '../config/sequelize.js';
+import Admin from '../models/Admin.js';
 
 const createAdmin = async () => {
   const args = process.argv.slice(2);
@@ -11,30 +13,22 @@ const createAdmin = async () => {
     await sequelize.authenticate();
     console.log('Database connection established.');
 
-    // 기존 관리자 확인
     const existing = await Admin.findOne({ where: { admin_id: adminId } });
     if (existing) {
       console.log('Admin already exists with ID:', adminId);
       process.exit(0);
     }
 
-    // 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // 관리자 생성
-    await Admin.create({
-      admin_id: adminId,
-      password: hashedPassword,
-    });
+    await Admin.create({ admin_id: adminId, password: hashedPassword });
 
     console.log('\n✅ Admin created successfully!');
     console.log('📝 Admin ID:', adminId);
     console.log('🔑 Password:', password);
-    console.log('\n⚠️  Please save these credentials securely!');
-    console.log('\n💡 Add to .env file:');
+    console.log('\n💡 Save to api/.env:');
     console.log(`ADMIN_ID=${adminId}`);
     console.log(`ADMIN_PASSWORD=${password}`);
-    
+
     process.exit(0);
   } catch (error) {
     console.error('❌ Error creating admin:', error);
@@ -42,4 +36,4 @@ const createAdmin = async () => {
   }
 };
 
-createAdmin();
+await createAdmin();

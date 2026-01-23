@@ -1,5 +1,5 @@
-const AppError = require('../utils/appError');
-const skillCaseRepository = require('../repositories/skillCaseRepository');
+import AppError from '../utils/appError.js';
+import skillCaseRepository from '../repositories/skillCaseRepository.js';
 
 const skillCaseService = {
   // 모든 사례 조회
@@ -57,4 +57,4 @@ const skillCaseService = {
   },
 };
 
-module.exports = skillCaseService;
+export default skillCaseService;

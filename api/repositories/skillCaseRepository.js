@@ -1,4 +1,4 @@
-const SkillCase = require('../models/SkillCase');
+import SkillCase from '../models/SkillCase.js';
 
 const skillCaseRepository = {
   // 모든 사례 조회
@@ -36,4 +36,4 @@ const skillCaseRepository = {
   },
 };
 
-module.exports = skillCaseRepository;
+export default skillCaseRepository;
