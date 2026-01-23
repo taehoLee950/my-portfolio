@@ -1,24 +1,45 @@
-// Primary Colors
-$primary-color: #667eea;
-$secondary-color: #764ba2;
-$accent-color: #f093fb;
+// Cyberpunk Color Palette
+// Background
+$bg-void: #050505;
+$bg-dark: #0a0a0a;
+
+// Neon Accents
+$neon-pink: #ff00ff;
+$neon-cyan: #00f3ff;
+$neon-yellow: #f3e600;
+$neon-green: #00ff41;
+$neon-red: #ff0040;
+
+// Primary Colors (사이버펑크 테마)
+$primary-color: $neon-cyan;
+$secondary-color: $neon-pink;
+$accent-color: $neon-yellow;
 
 // Text Colors
-$text-primary: #1a1a1a;
-$text-secondary: #666666;
-$text-light: #999999;
+$text-primary: #ffffff;
+$text-secondary: #b0b0b0;
+$text-light: #808080;
+$text-dark: #404040;
 
 // Background Colors
-$bg-primary: #ffffff;
-$bg-secondary: #f8f9fa;
-$bg-dark: #1a1a1a;
+$bg-primary: $bg-void;
+$bg-secondary: $bg-dark;
 
-// Status Colors
-$success-color: #28a745;
-$error-color: #dc3545;
-$warning-color: #ffc107;
-$info-color: #17a2b8;
+// Status Colors (네온 스타일)
+$success-color: $neon-green;
+$error-color: $neon-red;
+$warning-color: $neon-yellow;
+$info-color: $neon-cyan;
 
 // Border Colors
-$border-color: #e0e0e0;
-$border-light: #f0f0f0;
+$border-color: rgba(0, 243, 255, 0.3);
+$border-light: rgba(255, 0, 255, 0.2);
+$border-neon: $neon-cyan;
+
+// Grid Colors
+$grid-color: rgba(0, 243, 255, 0.1);
+
+// Glow Effects
+$glow-cyan: 0 0 10px $neon-cyan, 0 0 20px $neon-cyan, 0 0 30px $neon-cyan;
+$glow-pink: 0 0 10px $neon-pink, 0 0 20px $neon-pink, 0 0 30px $neon-pink;
+$glow-yellow: 0 0 10px $neon-yellow, 0 0 20px $neon-yellow;

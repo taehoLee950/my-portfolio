@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import './Hero.scss';
 
 const Hero = () => {
   const { t } = useTranslation();
+  const [isGlitching, setIsGlitching] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -27,8 +28,38 @@ const Hero = () => {
     },
   };
 
+  const handleNameHover = () => {
+    setIsGlitching(true);
+    setTimeout(() => setIsGlitching(false), 500);
+  };
+
+  // 바이너리 코드 장식 데이터
+  const binaryData = [
+    '01001000 01100101 01101100 01101100 01101111',
+    '01010111 01101111 01110010 01101100 01100100',
+    '00110001 00110000 00110001 00110000 00110001',
+    '01000011 01111001 01100010 01100101 01110010',
+  ];
+
   return (
     <section id="hero" className="hero">
+      {/* 배경 장식 데이터 */}
+      <div className="hero__binary-bg">
+        {binaryData.map((data, index) => (
+          <div
+            key={index}
+            className="hero__binary-item"
+            style={{
+              top: `${20 + index * 15}%`,
+              left: `${10 + index * 5}%`,
+              opacity: 0.1,
+            }}
+          >
+            {data}
+          </div>
+        ))}
+      </div>
+
       <div className="hero__container">
         <motion.div
           className="hero__content"
@@ -39,7 +70,13 @@ const Hero = () => {
           <motion.h1 className="hero__title" variants={itemVariants}>
             {t('hero.title')}
             <br />
-            <span className="hero__name">{t('hero.name')}</span>
+            <span
+              className={`hero__name ${isGlitching ? 'hero__name--glitch' : ''}`}
+              onMouseEnter={handleNameHover}
+              data-text={t('hero.name')}
+            >
+              {t('hero.name')}
+            </span>
             {t('hero.subtitle')}
           </motion.h1>
           <motion.p className="hero__subtitle" variants={itemVariants}>
@@ -52,7 +89,12 @@ const Hero = () => {
           initial="hidden"
           animate="visible"
         >
-          {/* 프로필 이미지 영역 - 추후 추가 */}
+          <div className="hero__image-frame">
+            {/* 프로필 이미지 영역 - 추후 추가 */}
+            <div className="hero__image-placeholder">
+              <span className="hero__image-label">IMAGE_DATA_LOADING...</span>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>

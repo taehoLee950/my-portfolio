@@ -7,8 +7,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,50 +17,59 @@
   }
 
   &__content {
-    background: white;
-    border-radius: 16px;
+    background: $bg-dark;
+    border-radius: 0;
     max-width: 800px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: $glow-cyan;
+    border: 2px solid $neon-cyan;
   }
 
   &__close {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: none;
-    border: none;
+    background: transparent;
+    border: 1px solid $neon-cyan;
     font-size: 2rem;
-    color: $text-secondary;
+    color: $neon-cyan;
     cursor: pointer;
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
     transition: all 0.3s ease;
     z-index: 10;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
 
     &:hover {
-      background: #f0f0f0;
-      color: $text-primary;
+      background: $neon-cyan;
+      color: $bg-void;
+      box-shadow: $glow-cyan;
+      transform: rotate(90deg);
     }
   }
 
   &__header {
     padding: 2rem 2rem 1rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid $border-color;
+    background: rgba(0, 243, 255, 0.05);
   }
 
   &__title {
     font-size: 2rem;
     font-weight: 700;
-    color: $text-primary;
+    color: $neon-cyan;
+    text-shadow: $glow-cyan;
     margin: 0;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
   }
 
   &__body {
@@ -72,6 +81,7 @@
     line-height: 1.8;
     margin-bottom: 2rem;
     font-size: 1.125rem;
+    font-family: 'Courier New', monospace;
   }
 
   &__technologies {
@@ -81,7 +91,10 @@
       font-size: 1.25rem;
       font-weight: 600;
       margin-bottom: 1rem;
-      color: $text-primary;
+      color: $neon-cyan;
+      text-shadow: $glow-cyan;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
     }
   }
 
@@ -92,12 +105,23 @@
   }
 
   &__tag {
-    background: $primary-color;
-    color: white;
+    background: transparent;
+    color: $neon-cyan;
     padding: 0.5rem 1rem;
-    border-radius: 20px;
+    border: 1px solid $neon-cyan;
     font-size: 0.875rem;
     font-weight: 500;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $neon-cyan;
+      color: $bg-void;
+      box-shadow: $glow-cyan;
+    }
   }
 
   &__section {
@@ -107,12 +131,17 @@
       font-size: 1.25rem;
       font-weight: 600;
       margin-bottom: 1rem;
-      color: $primary-color;
+      color: $neon-pink;
+      text-shadow: $glow-pink;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     p {
       color: $text-secondary;
       line-height: 1.8;
+      font-family: 'Courier New', monospace;
     }
   }
 }
