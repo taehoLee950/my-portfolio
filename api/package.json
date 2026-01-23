@@ -1,7 +1,20 @@
 {
+  "name": "portfolio-api",
+  "version": "1.0.0",
+  "description": "Portfolio Backend API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "create-admin": "node scripts/create-admin.js",
+    "reset-admin": "node scripts/reset-admin-password.js",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:seed": "sequelize-cli db:seed:all"
+  },
   "devDependencies": {
     "nodemon": "^3.1.11",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "sequelize-cli": "^6.6.2"
   },
   "dependencies": {
     "@sentry/node": "^10.36.0",
@@ -16,6 +29,7 @@
     "nodemailer": "^7.0.12",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "express-rate-limit": "^7.4.1",
     "sequelize": "^6.37.7",
     "web-push": "^3.6.7"
   }
