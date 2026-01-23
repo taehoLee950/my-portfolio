@@ -1,10 +1,24 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/sequelize.js';
-import Project from './Project.js';
+'use strict';
+import { Model, DataTypes } from 'sequelize';
 
-const ProjectImage = sequelize.define(
-  'ProjectImage',
-  {
+export default (sequelize) => {
+  class ProjectImage extends Model {
+    static associate(models) {
+      // Project와의 관계 설정
+      ProjectImage.belongsTo(models.Project, {
+        foreignKey: 'project_id',
+        onDelete: 'CASCADE',
+      });
+      
+      // Project 모델에 hasMany 관계 추가
+      models.Project.hasMany(ProjectImage, {
+        foreignKey: 'project_id',
+        as: 'images',
+      });
+    }
+  }
+
+  ProjectImage.init({
     id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -14,7 +28,7 @@ const ProjectImage = sequelize.define(
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: Project,
+        model: 'projects', // 테이블 이름 직접 참조
         key: 'id',
       },
       onDelete: 'CASCADE',
@@ -34,16 +48,13 @@ const ProjectImage = sequelize.define(
       allowNull: false,
       defaultValue: 0,
     },
-  },
-  {
+  }, {
+    sequelize,
+    modelName: 'ProjectImage',
     tableName: 'project_images',
     timestamps: true,
     underscored: true,
-  }
-);
+  });
 
-// Associations
-ProjectImage.belongsTo(Project, { foreignKey: 'project_id' });
-Project.hasMany(ProjectImage, { foreignKey: 'project_id', as: 'images' });
-
-export default ProjectImage;
+  return ProjectImage;
+};

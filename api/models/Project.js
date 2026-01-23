@@ -1,9 +1,14 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/sequelize.js';
+'use strict';
+import { Model, DataTypes } from 'sequelize';
 
-const Project = sequelize.define(
-  'Project',
-  {
+export default (sequelize) => {
+  class Project extends Model {
+    static associate(models) {
+      // define association here
+    }
+  }
+
+  Project.init({
     id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -91,8 +96,9 @@ const Project = sequelize.define(
       type: DataTypes.JSON,
       allowNull: true,
     },
-  },
-  {
+  }, {
+    sequelize,
+    modelName: 'Project',
     tableName: 'projects',
     timestamps: true,
     underscored: true,
@@ -101,7 +107,7 @@ const Project = sequelize.define(
         fields: ['slug'],
       },
     ],
-  }
-);
+  });
 
-export default Project;
+  return Project;
+};

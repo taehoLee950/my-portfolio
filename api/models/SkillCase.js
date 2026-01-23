@@ -1,9 +1,14 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/sequelize.js';
+'use strict';
+import { Model, DataTypes } from 'sequelize';
 
-const SkillCase = sequelize.define(
-  'SkillCase',
-  {
+export default (sequelize) => {
+  class SkillCase extends Model {
+    static associate(models) {
+      // define association here
+    }
+  }
+
+  SkillCase.init({
     id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -59,12 +64,13 @@ const SkillCase = sequelize.define(
       type: DataTypes.JSON,
       allowNull: true,
     },
-  },
-  {
+  }, {
+    sequelize,
+    modelName: 'SkillCase',
     tableName: 'skill_cases',
     timestamps: true,
     underscored: true,
-  }
-);
+  });
 
-export default SkillCase;
+  return SkillCase;
+};

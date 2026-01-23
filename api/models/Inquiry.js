@@ -1,9 +1,14 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/sequelize.js';
+'use strict';
+import { Model, DataTypes } from 'sequelize';
 
-const Inquiry = sequelize.define(
-  'Inquiry',
-  {
+export default (sequelize) => {
+  class Inquiry extends Model {
+    static associate(models) {
+      // define association here
+    }
+  }
+
+  Inquiry.init({
     id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -39,12 +44,13 @@ const Inquiry = sequelize.define(
         notEmpty: true,
       },
     },
-  },
-  {
+  }, {
+    sequelize,
+    modelName: 'Inquiry',
     tableName: 'inquiries',
     timestamps: true,
     underscored: true,
-  }
-);
+  });
 
-export default Inquiry;
+  return Inquiry;
+};

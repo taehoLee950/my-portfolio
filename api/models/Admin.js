@@ -1,9 +1,19 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/sequelize.js';
+'use strict';
+import { Model, DataTypes } from 'sequelize';
 
-const Admin = sequelize.define(
-  'Admin',
-  {
+export default (sequelize) => {
+  class Admin extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+
+  Admin.init({
     id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -33,12 +43,13 @@ const Admin = sequelize.define(
       type: DataTypes.JSON,
       allowNull: true,
     },
-  },
-  {
+  }, {
+    sequelize,
+    modelName: 'Admin',
     tableName: 'admins',
     timestamps: true,
     underscored: true,
-  }
-);
+  });
 
-export default Admin;
+  return Admin;
+};
