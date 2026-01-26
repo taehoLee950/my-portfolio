@@ -1,4 +1,5 @@
-import SkillCase from '../models/SkillCase.js';
+import db from '../models/index.js';
+const SkillCase = db.SkillCase;
 
 const skillCaseRepository = {
   // 모든 사례 조회

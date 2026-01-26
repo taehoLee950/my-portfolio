@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
-import Inquiry from '../models/Inquiry.js';
+import db from '../models/index.js';
+const Inquiry = db.Inquiry;
 
 const inquiryRepository = {
   // 모든 문의 조회

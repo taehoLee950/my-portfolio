@@ -21,6 +21,15 @@ const projectService = {
     return project;
   },
 
+  // ID로 프로젝트 조회 (내부용)
+  getProjectById: async (id) => {
+    const project = await projectRepository.findById(id);
+    if (!project) {
+      throw new AppError('Project not found', 404, 'PROJECT_NOT_FOUND');
+    }
+    return project;
+  },
+
   // 프로젝트 생성
   createProject: async (data) => {
     try {

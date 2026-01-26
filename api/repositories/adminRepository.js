@@ -1,4 +1,5 @@
-import Admin from '../models/Admin.js';
+import db from '../models/index.js';
+const Admin = db.Admin;
 
 const adminRepository = {
   // 관리자 ID로 조회

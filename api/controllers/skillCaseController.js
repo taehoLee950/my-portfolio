@@ -24,9 +24,20 @@ const skillCaseController = {
     });
   }),
 
-  // 사례 생성 (관리자용)
+  // 사례 생성 (관리자용, 이미지 업로드 포함)
   createSkillCase: asyncHandler(async (req, res, next) => {
-    const skillCase = await skillCaseService.createSkillCase(req.body);
+    const skillCaseData = { ...req.body };
+    
+    // 이미지 파일이 있으면 URL 생성 및 metadata에 저장
+    if (req.file) {
+      const imageUrl = `/api/static/${req.file.filename}`;
+      skillCaseData.metadata = {
+        ...(skillCaseData.metadata || {}),
+        image_url: imageUrl,
+      };
+    }
+
+    const skillCase = await skillCaseService.createSkillCase(skillCaseData);
 
     res.status(201).json({
       status: 'success',
@@ -34,10 +45,21 @@ const skillCaseController = {
     });
   }),
 
-  // 사례 수정 (관리자용)
+  // 사례 수정 (관리자용, 이미지 업로드 포함)
   updateSkillCase: asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const skillCase = await skillCaseService.updateSkillCase(id, req.body);
+    const skillCaseData = { ...req.body };
+    
+    // 이미지 파일이 있으면 URL 생성 및 metadata에 저장
+    if (req.file) {
+      const imageUrl = `/api/static/${req.file.filename}`;
+      skillCaseData.metadata = {
+        ...(skillCaseData.metadata || {}),
+        image_url: imageUrl,
+      };
+    }
+
+    const skillCase = await skillCaseService.updateSkillCase(id, skillCaseData);
 
     res.status(200).json({
       status: 'success',

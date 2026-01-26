@@ -4,7 +4,7 @@ import { Model, DataTypes } from 'sequelize';
 export default (sequelize) => {
   class SkillCase extends Model {
     static associate(models) {
-      // define association here
+      // associations can be defined here
     }
   }
 
@@ -15,7 +15,7 @@ export default (sequelize) => {
       autoIncrement: true,
     },
     category: {
-      type: DataTypes.ENUM('Frontend', 'Backend', 'DevOps'),
+      type: DataTypes.ENUM('Frontend', 'Backend', 'DevOps', 'JavaScript (ES6+)', 'CSS & UI/UX', 'PWA', 'API Documentation', 'Backend (Node.js/Express)', 'Backend (MySQL/Sequelize)'),
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -28,28 +28,18 @@ export default (sequelize) => {
         notEmpty: true,
       },
     },
-    content_ko: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
     },
-    content_en: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    notion_link: {
-      type: DataTypes.STRING(500),
-      allowNull: true,
-      validate: {
-        isUrl: {
-          msg: 'Invalid URL format',
+    notionUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+          isUrl: {
+            msg: 'Invalid URL format',
+          },
         },
-      },
     },
     reference_link: {
       type: DataTypes.STRING(500),

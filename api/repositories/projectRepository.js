@@ -1,5 +1,5 @@
-import Project from '../models/Project.js';
-import ProjectImage from '../models/ProjectImage.js';
+import db from '../models/index.js';
+const { Project, ProjectImage } = db;
 
 const projectRepository = {
   // 모든 프로젝트 조회 (내림차순 정렬)

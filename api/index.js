@@ -4,17 +4,23 @@ import './config/sentry.js';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import sequelize from './config/sequelize.js';
 import routes from './routes/index.js';
 import errorHandler from './middlewares/errorMiddleware.js';
 import passport from './config/passport.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 // Trust proxy (Vercel 배포 시 필요)
 app.set('trust proxy', 1);
 
+// CORS 설정 (모든 라우터보다 위에 위치)
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
@@ -24,6 +30,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 app.use(passport.initialize());
+
+// 정적 파일 서빙 (업로드된 이미지)
+app.use('/api/static', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api', routes);
 
