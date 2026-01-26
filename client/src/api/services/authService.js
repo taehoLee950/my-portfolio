@@ -1,14 +1,29 @@
-import axiosInstance from '../axiosInstance';
+import axiosInstance from "../axiosInstance";
 
 const authService = {
-  /**
-   * 관리자 로그인을 요청합니다.
-   * @param {string} adminId - 관리자 ID
-   * @param {string} password - 비밀번호
-   * @returns {Promise<AxiosResponse<any>>}
-   */
-  login: (adminId, password) => {
-    return axiosInstance.post('/auth/login', { adminId, password });
+  login: async (adminId, password) => {
+    const response = await axiosInstance.post("/auth/login", {
+      adminId,
+      password,
+    });
+    return response.data; // { status, data: { accessToken, admin } }
+  },
+
+  refresh: async () => {
+    const response = await axiosInstance.post("/auth/refresh");
+    return response.data; // { status, data: { accessToken } }
+  },
+
+  logout: async () => {
+    const response = await axiosInstance.post("/auth/logout");
+    return response.data;
+  },
+
+  savePushSubscription: async (subscription) => {
+    const response = await axiosInstance.post("/auth/push-subscription", {
+      subscription,
+    });
+    return response.data;
   },
 };
 

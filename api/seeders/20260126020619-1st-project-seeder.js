@@ -7,7 +7,7 @@ export default {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert("projects", [
       {
-        id: 1, // 임~ 1번으로 수정했습니다!
+        id: 1,
         slug: "daegu-sky-pwa",
         title_ko: "대구맑음: PWA 기반 사용자 맞춤형 대기질 대시보드",
         title_en: "Daegu Sky: PWA-based Customized Air Quality Dashboard",
@@ -32,9 +32,9 @@ export default {
           "PWA",
           "Vite",
           "JavaScript",
-          "SCSS",
         ]),
         github_url: "https://github.com/wahitworks/daegu-sky",
+        reference_link: "https://www.notion.so/2ed3ee00e67a81ea953dcce26b6781d0?source=copy_link",
         version: 0,
         metadata: JSON.stringify({
           focus: "Frontend Interaction & PWA",

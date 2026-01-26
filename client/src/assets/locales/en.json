@@ -46,6 +46,13 @@
     "troubleshooting": "Troubleshooting",
     "improvement": "Improvement"
   },
+  "projectModal": {
+    "techStack": "Technologies Used",
+    "myTasks": "My Tasks",
+    "github": "GitHub",
+    "referenceLink": "Reference Link",
+    "metadata": "Metadata"
+  },
   "learning": {
     "title": "Learning Technology Use Cases",
     "subtitle": "Core Improvement Logic"

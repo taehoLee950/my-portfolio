@@ -162,4 +162,58 @@
       box-shadow: $glow-pink;
     }
   }
+
+  // Admin Navigation Styles
+  &__item--admin {
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 1px solid $border-color;
+
+    @media (max-width: 768px) {
+      border-left: none;
+      padding-left: 0;
+      margin-left: 0;
+      border-top: 1px solid $border-color;
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  &__admin-link {
+    color: $neon-yellow !important;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(255, 234, 0, 0.3);
+
+    &:hover {
+      color: $neon-yellow !important;
+      text-shadow: $glow-yellow !important;
+    }
+  }
+
+  &__logout-btn {
+    background: transparent;
+    border: 1px solid $neon-red;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: $neon-red;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 8px rgba(255, 0, 64, 0.3);
+
+    &:hover {
+      background: $neon-red;
+      color: $bg-void;
+      box-shadow: $glow-red;
+      transform: scale(1.02);
+    }
+  }
 }

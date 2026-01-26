@@ -78,7 +78,7 @@ export default {
       charset: 'utf8mb4',
       collate: 'utf8mb4_unicode_ci',
     });
-    await queryInterface.addIndex('projects', ['slug']);
+    // Removed redundant index creation: await queryInterface.addIndex('projects', ['slug']);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('projects');

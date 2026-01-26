@@ -15,7 +15,7 @@ export default (sequelize) => {
       autoIncrement: true,
     },
     category: {
-      type: DataTypes.ENUM('Frontend', 'Backend', 'DevOps', 'JavaScript (ES6+)', 'CSS & UI/UX', 'PWA', 'API Documentation', 'Backend (Node.js/Express)', 'Backend (MySQL/Sequelize)'),
+      type: DataTypes.ENUM('Frontend', 'Backend', 'DevOps', 'JavaScript (ES6+)', 'CSS & UI/UX', 'PWA', 'API Documentation', 'Backend (Node.js/Express)', 'Backend (MySQL/Sequelize)', 'Utility & Export', 'Test-Driven Development'),
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -28,18 +28,28 @@ export default (sequelize) => {
         notEmpty: true,
       },
     },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: true,
+    content_ko: { // Reverted from description
+      type: DataTypes.TEXT,
+      allowNull: false, // Assuming not null based on original
+      validate: {
+        notEmpty: true,
+      },
     },
-    notionUrl: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-          isUrl: {
-            msg: 'Invalid URL format',
-          },
+    content_en: { // Reverted from description
+      type: DataTypes.TEXT,
+      allowNull: false, // Assuming not null based on original
+      validate: {
+        notEmpty: true,
+      },
+    },
+    notion_link: { // Reverted from notionUrl
+      type: DataTypes.STRING(500),
+      allowNull: true,
+      validate: {
+        isUrl: {
+          msg: 'Invalid URL format',
         },
+      },
     },
     reference_link: {
       type: DataTypes.STRING(500),

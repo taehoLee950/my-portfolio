@@ -10,6 +10,7 @@ const LearningCases = () => {
   const dispatch = useDispatch();
   const { skillCases, loading, error } = useSelector((state) => state.skillCases);
   const { isAuthenticated } = useSelector((state) => state.auth); // Get auth status
+  const [typedTexts, setTypedTexts] = useState({}); // State for typing animation
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false); // For form modal visibility
   const [skillCaseToEdit, setSkillCaseToEdit] = useState(null); // For passing skillCase data to form modal
@@ -19,6 +20,31 @@ const LearningCases = () => {
       dispatch(fetchSkillCases());
     }
   }, [dispatch, loading]);
+
+  useEffect(() => {
+    skillCases.forEach((caseItem) => {
+      // Re-introduce typing animation logic
+      if (!typedTexts[caseItem.id] || typedTexts[caseItem.id] !== (i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en)) {
+        const content = i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en;
+        typeText(caseItem.id, content);
+      }
+    });
+  }, [skillCases, i18n.language, typedTexts]); // Added typedTexts to dependency array
+
+  const typeText = (id, text) => {
+    let currentIndex = 0;
+    const interval = setInterval(() => {
+      if (currentIndex <= text.length) {
+        setTypedTexts((prev) => ({
+          ...prev,
+          [id]: text.substring(0, currentIndex),
+        }));
+        currentIndex++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 30);
+  };
 
   const handleOpenAddModal = () => {
     setSkillCaseToEdit(null); // No skillCase to edit, it's a new one
@@ -89,8 +115,8 @@ const LearningCases = () => {
         <div className="learning__grid">
           {skillCases && skillCases.length > 0 ? (
             skillCases.map((caseItem) => {
-              // const content = i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en; // Old content fields
-              const status = caseItem.metadata?.status || 'STABLE';
+              const currentContent = i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en;
+              const status = caseItem.metadata?.status || 'STABLE'; // Assuming metadata is still there
               const statusColor = status === 'CRITICAL' ? 'red' : 'green';
 
               return (
@@ -104,11 +130,11 @@ const LearningCases = () => {
                 </div>
               </div>
               <p className="learning__card-description">
-                {caseItem.description} {/* Use the new description field */}
+                {typedTexts[caseItem.id] || ''} {/* Display typing animation content */}
               </p>
-              {caseItem.notionUrl && (
+              {caseItem.notion_link && ( // Use notion_link
                 <div className="learning__card-link">
-                  <a href={caseItem.notionUrl} target="_blank" rel="noopener noreferrer">
+                  <a href={caseItem.notion_link} target="_blank" rel="noopener noreferrer">
                     {t('learning.viewNotion')}
                   </a>
                 </div>

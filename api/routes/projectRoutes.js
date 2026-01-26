@@ -12,7 +12,7 @@ router.get('/:slug', apiLimiter, projectController.getProjectBySlug);
 
 // Admin routes
 router.post('/', authenticate, upload.single('image'), projectController.createProject);
-router.put('/:id', authenticate, projectController.updateProject);
+router.patch('/:id', authenticate, upload.single('image'), projectController.updateProject);
 router.delete('/:id', authenticate, projectController.deleteProject);
 router.post('/:projectId/images', authenticate, upload.single('image'), projectController.addProjectImage);
 router.delete('/images/:imageId', authenticate, projectController.deleteProjectImage);

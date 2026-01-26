@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProject, updateProject, clearError, addProjectImage } from '../../store/slices/projectSlice';
 import { useTranslation } from 'react-i18next';
+import Portal from '../common/Portal';
 import './ProjectFormModal.scss';
 
 const ProjectFormModal = ({ project, onClose }) => {
@@ -88,8 +89,9 @@ const ProjectFormModal = ({ project, onClose }) => {
   };
 
   return (
-    <div className="project-form-modal__overlay">
-      <div className="project-form-modal__content">
+    <Portal>
+      <div className="project-form-modal__overlay">
+        <div className="project-form-modal__content">
         <button className="project-form-modal__close" onClick={onClose}>
           ×
         </button>
@@ -148,8 +150,9 @@ const ProjectFormModal = ({ project, onClose }) => {
             {loading === 'pending' || imageUploadLoading ? 'Processing...' : (isEditing ? 'Update Project' : 'Create Project')}
           </button>
         </form>
+        </div>
       </div>
-    </div>
+    </Portal>
   );
 };
 

@@ -224,3 +224,87 @@ section {
     animation: glitch 0.5s infinite linear alternate-reverse;
   }
 }
+
+// 앱 로딩 화면
+.app-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $bg-void;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+
+  &__content {
+    text-align: center;
+  }
+
+  &__spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid transparent;
+    border-top-color: $neon-cyan;
+    border-bottom-color: $neon-pink;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    animation: spin 1s linear infinite;
+    box-shadow: $glow-cyan, inset $glow-pink;
+  }
+
+  &__text {
+    font-family: 'Courier New', monospace;
+    font-size: 1.25rem;
+    color: $neon-cyan;
+    text-shadow: $glow-cyan;
+    letter-spacing: 3px;
+    animation: blink 1s infinite;
+  }
+}
+
+// ProtectedRoute 로딩 화면
+.protected-route__loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $bg-void;
+  
+  p {
+    font-family: 'Courier New', monospace;
+    font-size: 1.25rem;
+    color: $neon-cyan;
+    text-shadow: $glow-cyan;
+    letter-spacing: 3px;
+    margin-top: 1rem;
+  }
+}
+
+.protected-route__spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid transparent;
+  border-top-color: $neon-cyan;
+  border-bottom-color: $neon-pink;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: $glow-cyan;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

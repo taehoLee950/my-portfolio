@@ -7,6 +7,7 @@ import { loginLimiter } from '../middlewares/rateLimiter.js';
 
 router.post('/login', loginLimiter, authController.login);
 router.post('/refresh', authController.refresh);
+router.post('/logout', authController.logout);
 router.post(
   '/push-subscription',
   authenticate,

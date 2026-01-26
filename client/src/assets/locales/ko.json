@@ -46,6 +46,13 @@
     "troubleshooting": "문제 해결",
     "improvement": "개선 사항"
   },
+  "projectModal": {
+    "techStack": "사용 기술",
+    "myTasks": "담당 업무",
+    "github": "깃허브",
+    "referenceLink": "참고 링크",
+    "metadata": "메타데이터"
+  },
   "learning": {
     "title": "학습 기술 사용 사례",
     "subtitle": "핵심 개선 로직"

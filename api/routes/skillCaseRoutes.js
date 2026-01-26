@@ -12,7 +12,7 @@ router.get('/:id', apiLimiter, skillCaseController.getSkillCaseById);
 
 // Admin routes
 router.post('/', authenticate, upload.single('image'), skillCaseController.createSkillCase);
-router.put('/:id', authenticate, upload.single('image'), skillCaseController.updateSkillCase);
+router.patch('/:id', authenticate, upload.single('image'), skillCaseController.updateSkillCase);
 router.delete('/:id', authenticate, skillCaseController.deleteSkillCase);
 
 export default router;
