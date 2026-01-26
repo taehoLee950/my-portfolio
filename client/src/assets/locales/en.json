@@ -13,17 +13,31 @@
   },
   "techStack": {
     "title": "Tech Stack",
-    "backend": {
-      "title": "Backend",
-      "description": "Server development with Node.js, Express, Sequelize"
-    },
+    "summary": "My professional toolkit includes a robust blend of frontend, backend, and database technologies, complemented by essential development tools and strong language proficiencies.",
     "frontend": {
       "title": "Frontend",
-      "description": "State management with React, Redux Toolkit"
+      "skills": "JavaScript (ES6+), React, PWA",
+      "description": "Proficient in modern web development, building interactive user interfaces with React and leveraging Progressive Web App capabilities for enhanced user experience."
+    },
+    "backend": {
+      "title": "Backend",
+      "skills": "Node.js (Express.js), Sequelize CLI",
+      "description": "Experienced in server-side development with Node.js and Express.js, utilizing Sequelize CLI for efficient database schema management and ORM."
     },
     "database": {
       "title": "Database",
-      "description": "MySQL concurrency control and Redis optimization planned"
+      "skills": "MySQL",
+      "description": "Skilled in relational database management with MySQL, ensuring data integrity and efficient querying for robust applications."
+    },
+    "tools": {
+      "title": "Tools",
+      "skills": "Git, Notion, Slack",
+      "description": "Adept at version control with Git, project management and documentation with Notion, and team collaboration through Slack."
+    },
+    "language": {
+      "title": "Language",
+      "skills": "English (Fluent), Japanese (Basic), Korean (Native)",
+      "description": "Fluent in English with 7 years of residency in the US, enabling seamless technical documentation comprehension and international collaboration. Basic Japanese and native Korean speaker."
     }
   },
   "projects": {

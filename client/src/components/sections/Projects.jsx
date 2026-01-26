@@ -2,16 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { fetchProjects } from '../../store/slices/projectSlice.js';
+import { fetchProjects, deleteProject } from '../../store/slices/projectSlice.js';
+import { logout } from '../../store/slices/authSlice'; // Import logout if needed for testing
 import ProjectModal from '../common/ProjectModal';
+import ProjectFormModal from '../admin/ProjectFormModal'; // Import the new form modal
 import './Projects.scss';
 
 const Projects = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { projects, loading, error } = useSelector((state) => state.projects);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const { isAuthenticated } = useSelector((state) => state.auth); // Get auth status
+
+  const [selectedProject, setSelectedProject] = useState(null); // For view modal
   const [hoveredProject, setHoveredProject] = useState(null);
+  
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false); // For form modal visibility
+  const [projectToEdit, setProjectToEdit] = useState(null); // For passing project data to form modal
 
   useEffect(() => {
     if (loading === 'idle') {
@@ -20,11 +27,36 @@ const Projects = () => {
   }, [dispatch, loading]);
 
   const handleProjectClick = (project) => {
-    setSelectedProject(project);
+    setSelectedProject(project); // Open view modal
   };
 
-  const handleCloseModal = () => {
+  const handleCloseViewModal = () => {
     setSelectedProject(null);
+  };
+
+  const handleOpenAddModal = () => {
+    setProjectToEdit(null); // No project to edit, it's a new one
+    setIsFormModalOpen(true);
+  };
+
+  const handleOpenEditModal = (project) => {
+    setProjectToEdit(project); // Pass project data for editing
+    setIsFormModalOpen(true);
+  };
+
+  const handleCloseFormModal = () => {
+    setIsFormModalOpen(false);
+    setProjectToEdit(null); // Clear project to edit
+    dispatch(fetchProjects()); // Refresh projects after form submission
+  };
+
+  const handleDeleteProject = (id) => {
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      dispatch(deleteProject(id))
+        .unwrap()
+        .then(() => alert('Project deleted successfully!'))
+        .catch((err) => alert(`Failed to delete project: ${err}`));
+    }
   };
 
   // 로딩 중 UI
@@ -59,6 +91,14 @@ const Projects = () => {
     <section id="projects" className="projects">
       <div className="projects__container">
         <h2 className="projects__title neon-text">{t('projects.title')}</h2>
+        {isAuthenticated && (
+          <div className="admin-actions">
+            <button onClick={handleOpenAddModal} className="admin-button add-button">
+              Add New Project
+            </button>
+            {/* <button onClick={() => dispatch(logout())} className="admin-button logout-button">Logout</button> */}
+          </div>
+        )}
         <div className="projects__grid">
           {projects && projects.length > 0 ? (
             projects.map((project, index) => {
@@ -72,7 +112,6 @@ const Projects = () => {
             <motion.div
               key={project.id}
               className="projects__card"
-              onClick={() => handleProjectClick(project)}
               onMouseEnter={() => setHoveredProject(project.id)}
               onMouseLeave={() => setHoveredProject(null)}
               whileHover={{ scale: 1.02 }}
@@ -85,6 +124,7 @@ const Projects = () => {
                 className={`projects__card-image ${
                   hoveredProject === project.id ? 'projects__card-image--hover' : ''
                 }`}
+                onClick={() => handleProjectClick(project)} // View modal on image click
               >
                 {firstImage ? (
                   <img 
@@ -114,9 +154,16 @@ const Projects = () => {
                     </span>
                   ))}
                 </div>
-                <button className="projects__card-button">
+                <button className="projects__card-button" onClick={() => handleProjectClick(project)}>
                   {t('projects.viewDetail')}
                 </button>
+
+                {isAuthenticated && (
+                  <div className="admin-project-actions">
+                    <button onClick={(e) => { e.stopPropagation(); handleOpenEditModal(project); }} className="admin-button edit-button">Edit</button>
+                    <button onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.id); }} className="admin-button delete-button">Delete</button>
+                  </div>
+                )}
               </div>
             </motion.div>
               );
@@ -130,7 +177,10 @@ const Projects = () => {
       </div>
       <AnimatePresence>
         {selectedProject && (
-          <ProjectModal project={selectedProject} onClose={handleCloseModal} />
+          <ProjectModal project={selectedProject} onClose={handleCloseViewModal} />
+        )}
+        {isFormModalOpen && (
+          <ProjectFormModal project={projectToEdit} onClose={handleCloseFormModal} />
         )}
       </AnimatePresence>
     </section>

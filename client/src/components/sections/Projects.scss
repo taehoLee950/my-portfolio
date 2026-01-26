@@ -25,6 +25,93 @@
     }
   }
 
+  /* Admin Actions - Added styles */
+  .admin-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-right: 1.5rem;
+
+    @media (max-width: 768px) {
+      justify-content: center;
+      padding-right: 0;
+    }
+  }
+
+  .admin-button {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid;
+    border-radius: 4px;
+    background: transparent;
+    color: $neon-cyan;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+
+    &.add-button {
+      border-color: $neon-green;
+      color: $neon-green;
+      box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+
+      &:hover {
+        background: $neon-green;
+        color: $bg-void;
+        box-shadow: $glow-green;
+      }
+    }
+
+    &:hover {
+      background: $neon-cyan;
+      color: $bg-void;
+      box-shadow: $glow-cyan;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .admin-project-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .admin-button.edit-button {
+    border-color: $neon-yellow;
+    color: $neon-yellow;
+    box-shadow: 0 0 8px rgba(255, 255, 0, 0.3);
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+
+    &:hover {
+      background: $neon-yellow;
+      color: $bg-void;
+      box-shadow: $glow-yellow;
+    }
+  }
+
+  .admin-button.delete-button {
+    border-color: $neon-red;
+    color: $neon-red;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+
+    &:hover {
+      background: $neon-red;
+      color: $bg-void;
+      box-shadow: $glow-red;
+    }
+  }
+  /* End Admin Actions - Added styles */
+
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));

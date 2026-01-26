@@ -8,6 +8,7 @@ import LearningCases from './components/sections/LearningCases';
 import Contact from './components/sections/Contact';
 import WireFlow from './components/common/WireFlow';
 import Login from './components/admin/Login';
+import Inquiries from './components/admin/Inquiries'; // Import the Inquiries component
 
 // Main portfolio layout component
 const MainLayout = () => {
@@ -39,6 +40,7 @@ function App() {
     <Routes>
       <Route path="/" element={<MainLayout />} />
       <Route path="/admin-login" element={<Login />} />
+      <Route path="/admin/inquiries" element={<Inquiries />} /> {/* New route for Inquiries */}
     </Routes>
   );
 }

@@ -9,6 +9,7 @@ $neon-cyan: #00f3ff;
 $neon-yellow: #f3e600;
 $neon-green: #00ff41;
 $neon-red: #ff0040;
+$neon-purple: #8A2BE2; // Adding neon-purple for links
 
 // Primary Colors (사이버펑크 테마)
 $primary-color: $neon-cyan;
@@ -43,3 +44,6 @@ $grid-color: rgba(0, 243, 255, 0.1);
 $glow-cyan: 0 0 10px $neon-cyan, 0 0 20px $neon-cyan, 0 0 30px $neon-cyan;
 $glow-pink: 0 0 10px $neon-pink, 0 0 20px $neon-pink, 0 0 30px $neon-pink;
 $glow-yellow: 0 0 10px $neon-yellow, 0 0 20px $neon-yellow;
+$glow-green: 0 0 10px $neon-green, 0 0 20px $neon-green; // Added missing glow-green
+$glow-red: 0 0 10px $neon-red, 0 0 20px $neon-red; // Added missing glow-red
+$glow-purple: 0 0 10px $neon-purple, 0 0 20px $neon-purple; // Added glow-purple

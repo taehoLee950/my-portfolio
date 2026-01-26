@@ -61,6 +61,37 @@ export const deleteProject = createAsyncThunk(
   }
 );
 
+// 프로젝트 이미지 추가 (관리자용)
+export const addProjectImage = createAsyncThunk(
+  'projects/addImage',
+  async ({ projectId, imageFile }, { rejectWithValue }) => {
+    try {
+      const response = await projectService.addProjectImage(projectId, imageFile);
+      return { projectId, image: response.data }; // API 응답에서 이미지 데이터가 반환된다고 가정
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to add project image'
+      );
+    }
+  }
+);
+
+// 프로젝트 이미지 삭제 (관리자용)
+export const deleteProjectImage = createAsyncThunk(
+  'projects/deleteImage',
+  async ({ projectId, imageId }, { rejectWithValue }) => {
+    try {
+      await projectService.deleteProjectImage(imageId);
+      return { projectId, imageId };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to delete project image'
+      );
+    }
+  }
+);
+
+
 const initialState = {
   projects: [],
   loading: 'idle',
@@ -97,7 +128,7 @@ const projectSlice = createSlice({
       })
       .addCase(createProject.fulfilled, (state, action) => {
         state.loading = 'succeeded';
-        state.projects.unshift(action.payload);
+        state.projects.unshift(action.payload); // 새 프로젝트를 목록 맨 앞에 추가
       })
       .addCase(createProject.rejected, (state, action) => {
         state.loading = 'failed';
@@ -112,7 +143,7 @@ const projectSlice = createSlice({
         state.loading = 'succeeded';
         const index = state.projects.findIndex((p) => p.id === action.payload.id);
         if (index !== -1) {
-          state.projects[index] = action.payload;
+          state.projects[index] = action.payload; // 업데이트된 프로젝트로 교체
         }
       })
       .addCase(updateProject.rejected, (state, action) => {
@@ -126,9 +157,43 @@ const projectSlice = createSlice({
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.loading = 'succeeded';
-        state.projects = state.projects.filter((p) => p.id !== action.payload);
+        state.projects = state.projects.filter((p) => p.id !== action.payload); // 삭제된 프로젝트 제거
       })
       .addCase(deleteProject.rejected, (state, action) => {
+        state.loading = 'failed';
+        state.error = action.payload;
+      })
+      // addProjectImage
+      .addCase(addProjectImage.pending, (state) => {
+        state.loading = 'pending';
+        state.error = null;
+      })
+      .addCase(addProjectImage.fulfilled, (state, action) => {
+        state.loading = 'succeeded';
+        const { projectId, image } = action.payload;
+        const project = state.projects.find((p) => p.id === projectId);
+        if (project) {
+          project.images = project.images ? [...project.images, image] : [image];
+        }
+      })
+      .addCase(addProjectImage.rejected, (state, action) => {
+        state.loading = 'failed';
+        state.error = action.payload;
+      })
+      // deleteProjectImage
+      .addCase(deleteProjectImage.pending, (state) => {
+        state.loading = 'pending';
+        state.error = null;
+      })
+      .addCase(deleteProjectImage.fulfilled, (state, action) => {
+        state.loading = 'succeeded';
+        const { projectId, imageId } = action.payload;
+        const project = state.projects.find((p) => p.id === projectId);
+        if (project && project.images) {
+          project.images = project.images.filter((img) => img.id !== imageId);
+        }
+      })
+      .addCase(deleteProjectImage.rejected, (state, action) => {
         state.loading = 'failed';
         state.error = action.payload;
       });

@@ -33,6 +33,97 @@
     font-family: 'Courier New', monospace;
   }
 
+  /* Admin Actions - Added styles */
+  .admin-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-right: 1.5rem; /* Align with projects section */
+
+    @media (max-width: 768px) {
+      justify-content: center;
+      padding-right: 0;
+    }
+  }
+
+  .admin-button {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid;
+    border-radius: 4px;
+    background: transparent;
+    color: $neon-cyan;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+
+    &.add-button {
+      border-color: $neon-green;
+      color: $neon-green;
+      box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+
+      &:hover {
+        background: $neon-green;
+        color: $bg-void;
+        box-shadow: $glow-green;
+      }
+    }
+
+    &:hover {
+      background: $neon-cyan;
+      color: $bg-void;
+      box-shadow: $glow-cyan;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .admin-skill-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-right: 1.5rem;
+    padding-bottom: 1rem;
+    border-top: 1px solid rgba(0, 243, 255, 0.1);
+    background: rgba(0, 243, 255, 0.02);
+  }
+
+  .admin-button.edit-button {
+    border-color: $neon-yellow;
+    color: $neon-yellow;
+    box-shadow: 0 0 8px rgba(255, 255, 0, 0.3);
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+
+    &:hover {
+      background: $neon-yellow;
+      color: $bg-void;
+      box-shadow: $glow-yellow;
+    }
+  }
+
+  .admin-button.delete-button {
+    border-color: $neon-red;
+    color: $neon-red;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+
+    &:hover {
+      background: $neon-red;
+      color: $bg-void;
+      box-shadow: $glow-red;
+    }
+  }
+  /* End Admin Actions - Added styles */
+
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -139,85 +230,20 @@
     font-size: 0.9rem;
   }
 
-  &__card-terminal {
-    background: #0a0a0a;
-    border-top: 1px solid $border-color;
-  }
-
-  &__card-terminal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    background: rgba(0, 0, 0, 0.5);
-    border-bottom: 1px solid $border-color;
-  }
-
-  &__card-terminal-title {
+  &__card-link {
+    margin: 0.5rem 1.5rem 1rem;
+    font-size: 0.9rem;
     font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: $neon-cyan;
-    text-shadow: $glow-cyan;
-    letter-spacing: 2px;
-  }
-
-  &__card-terminal-controls {
-    display: flex;
-    gap: 0.5rem;
-
-    span {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: $text-secondary;
-
-      &:nth-child(1) {
-        background: $neon-red;
+    
+    a {
+      color: $neon-purple; /* A color distinct from cyan, yellow, green, red */
+      text-decoration: none;
+      text-shadow: $glow-purple;
+      
+      &:hover {
+        text-decoration: underline;
+        color: lighten($neon-purple, 10%);
       }
-      &:nth-child(2) {
-        background: $neon-yellow;
-      }
-      &:nth-child(3) {
-        background: $neon-green;
-      }
-    }
-  }
-
-  &__card-code {
-    padding: 1.5rem;
-    background: #0a0a0a;
-    position: relative;
-    min-height: 200px;
-
-    pre {
-      margin: 0;
-      color: $neon-green;
-      font-family: 'Courier New', monospace;
-      font-size: 0.875rem;
-      line-height: 1.8;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    code {
-      color: $neon-green;
-      text-shadow: 0 0 5px $neon-green;
-    }
-  }
-
-  &__card-cursor {
-    color: $neon-cyan;
-    animation: blink 1s infinite;
-    margin-left: 2px;
-  }
-
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
     }
   }
 
