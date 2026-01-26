@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import profilePicture from '../../assets/images/profilePicture.png'; // Import the profile picture
 import './Hero.scss';
 
 const Hero = () => {
@@ -90,10 +91,8 @@ const Hero = () => {
           animate="visible"
         >
           <div className="hero__image-frame">
-            {/* 프로필 이미지 영역 - 추후 추가 */}
-            <div className="hero__image-placeholder">
-              <span className="hero__image-label">IMAGE_DATA_LOADING...</span>
-            </div>
+            {/* 프로필 이미지 영역 */}
+            <img src={profilePicture} alt="Profile" className="hero__profile-picture" />
           </div>
         </motion.div>
       </div>
