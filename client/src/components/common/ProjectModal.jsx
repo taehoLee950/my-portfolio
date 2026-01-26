@@ -48,30 +48,41 @@ const ProjectModal = ({ project, onClose }) => {
           ×
         </button>
         <div className="project-modal__header">
-          <h2 className="project-modal__title">{project.title}</h2>
+          <h2 className="project-modal__title">
+            {project.title_ko || project.title}
+          </h2>
         </div>
         <div className="project-modal__body">
-          <p className="project-modal__description">{project.description}</p>
+          <p className="project-modal__description">
+            {project.role_summary || project.description}
+          </p>
           <div className="project-modal__technologies">
             <h3>사용 기술</h3>
             <div className="project-modal__tags">
-              {project.technologies.map((tech) => (
+              {(project.tech_stack || project.technologies || []).map((tech) => (
                 <span key={tech} className="project-modal__tag">
-                  {tech}
+                  [{tech}]
                 </span>
               ))}
             </div>
           </div>
-          {project.troubleshooting && (
+          {project.my_tasks_ko && (
             <div className="project-modal__section">
-              <h3>{t('projects.troubleshooting')}</h3>
-              <p>{project.troubleshooting}</p>
+              <h3>담당 업무</h3>
+              <p>{project.my_tasks_ko}</p>
             </div>
           )}
-          {project.improvement && (
+          {project.github_url && (
             <div className="project-modal__section">
-              <h3>{t('projects.improvement')}</h3>
-              <p>{project.improvement}</p>
+              <h3>GitHub</h3>
+              <a
+                href={project.github_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="project-modal__link"
+              >
+                {project.github_url}
+              </a>
             </div>
           )}
         </div>

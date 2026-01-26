@@ -220,4 +220,26 @@
       opacity: 0;
     }
   }
+
+  &__loading,
+  &__error,
+  &__empty {
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  &__loading-text,
+  &__error-text,
+  &__empty-text {
+    font-family: 'Courier New', monospace;
+    font-size: 1.25rem;
+    color: $neon-cyan;
+    text-shadow: $glow-cyan;
+    letter-spacing: 2px;
+  }
+
+  &__error-text {
+    color: $neon-red;
+    text-shadow: 0 0 10px $neon-red;
+  }
 }

@@ -1,46 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSkillCases } from '../../store/slices/skillCaseSlice.js';
 import './LearningCases.scss';
 
 const LearningCases = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
+  const { skillCases, loading, error } = useSelector((state) => state.skillCases);
   const [typedTexts, setTypedTexts] = useState({});
 
-  // 추후 API에서 가져올 데이터 구조
-  const learningCases = [
-    {
-      id: 1,
-      title: '개선 로직 1',
-      description: '설명 내용',
-      code: `// 동시성 제어 개선\nconst transaction = await sequelize.transaction();\ntry {\n  await Model.update(data, { transaction });\n  await transaction.commit();\n} catch (error) {\n  await transaction.rollback();\n}`,
-      status: 'STABLE',
-      statusColor: 'green',
-    },
-    {
-      id: 2,
-      title: '개선 로직 2',
-      description: '설명 내용',
-      code: `// 상태 관리 개선\nconst dispatch = useDispatch();\ndispatch(fetchDataAsync());`,
-      status: 'STABLE',
-      statusColor: 'green',
-    },
-    {
-      id: 3,
-      title: '개선 로직 3',
-      description: '설명 내용',
-      code: `// 에러 핸들링 개선\ntry {\n  // code\n} catch (error) {\n  Sentry.captureException(error);\n}`,
-      status: 'CRITICAL',
-      statusColor: 'red',
-    },
-  ];
+  useEffect(() => {
+    if (loading === 'idle') {
+      dispatch(fetchSkillCases());
+    }
+  }, [dispatch, loading]);
 
   useEffect(() => {
-    learningCases.forEach((caseItem) => {
+    skillCases.forEach((caseItem) => {
       if (!typedTexts[caseItem.id]) {
-        typeText(caseItem.id, caseItem.code);
+        const content = i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en;
+        typeText(caseItem.id, content);
       }
     });
-  }, []);
+  }, [skillCases, i18n.language]);
 
   const typeText = (id, text) => {
     let currentIndex = 0;
@@ -57,23 +40,59 @@ const LearningCases = () => {
     }, 30);
   };
 
+  // 로딩 중 UI
+  if (loading === 'pending') {
+    return (
+      <section id="learning" className="learning">
+        <div className="learning__container">
+          <h2 className="learning__title neon-text">{t('learning.title')}</h2>
+          <div className="learning__loading">
+            <span className="learning__loading-text">LOADING SKILL CASES...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // 에러 발생 UI
+  if (error) {
+    return (
+      <section id="learning" className="learning">
+        <div className="learning__container">
+          <h2 className="learning__title neon-text">{t('learning.title')}</h2>
+          <div className="learning__error">
+            <span className="learning__error-text">ERROR: {error}</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="learning" className="learning">
       <div className="learning__container">
         <h2 className="learning__title neon-text">{t('learning.title')}</h2>
         <p className="learning__subtitle">{t('learning.subtitle')}</p>
         <div className="learning__grid">
-          {learningCases.map((caseItem) => (
+          {skillCases && skillCases.length > 0 ? (
+            skillCases.map((caseItem) => {
+              const content = i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en;
+              const status = caseItem.metadata?.status || 'STABLE';
+              const statusColor = status === 'CRITICAL' ? 'red' : 'green';
+
+              return (
             <div key={caseItem.id} className="learning__card learning__card--crt">
               <div className="learning__card-header">
-                <h3 className="learning__card-title">{caseItem.title}</h3>
+                <h3 className="learning__card-title">{caseItem.skill_name}</h3>
                 <div
-                  className={`learning__card-status learning__card-status--${caseItem.statusColor}`}
+                  className={`learning__card-status learning__card-status--${statusColor}`}
                 >
-                  STATUS: {caseItem.status}
+                  STATUS: {status}
                 </div>
               </div>
-              <p className="learning__card-description">{caseItem.description}</p>
+              <p className="learning__card-description">
+                {i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en}
+              </p>
               <div className="learning__card-terminal">
                 <div className="learning__card-terminal-header">
                   <span className="learning__card-terminal-title">TERMINAL</span>
@@ -91,7 +110,13 @@ const LearningCases = () => {
                 </div>
               </div>
             </div>
-          ))}
+              );
+            })
+          ) : (
+            <div className="learning__empty">
+              <span className="learning__empty-text">NO SKILL CASES FOUND</span>
+            </div>
+          )}
         </div>
       </div>
     </section>

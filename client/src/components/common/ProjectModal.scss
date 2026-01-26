@@ -144,4 +144,17 @@
       font-family: 'Courier New', monospace;
     }
   }
+
+  &__link {
+    color: $neon-cyan;
+    text-decoration: none;
+    font-family: 'Courier New', monospace;
+    text-shadow: $glow-cyan;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: $neon-pink;
+      text-shadow: $glow-pink;
+    }
+  }
 }

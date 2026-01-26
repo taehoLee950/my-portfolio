@@ -1,4 +1,5 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
 import Hero from './components/sections/Hero';
 import TechStack from './components/sections/TechStack';
@@ -6,8 +7,10 @@ import Projects from './components/sections/Projects';
 import LearningCases from './components/sections/LearningCases';
 import Contact from './components/sections/Contact';
 import WireFlow from './components/common/WireFlow';
+import Login from './components/admin/Login';
 
-function App() {
+// Main portfolio layout component
+const MainLayout = () => {
   // Wire Flow 경로 정의 (화면 전체를 가로지르는 전기 흐름 경로)
   const wirePaths = [
     'M 0,100 Q 250,50 500,100 T 1000,100',
@@ -29,6 +32,16 @@ function App() {
       </main>
     </div>
   );
+};
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<MainLayout />} />
+      <Route path="/admin-login" element={<Login />} />
+    </Routes>
+  );
 }
 
 export default App;
+

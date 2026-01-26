@@ -1,37 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
+import { fetchProjects } from '../../store/slices/projectSlice.js';
 import ProjectModal from '../common/ProjectModal';
 import './Projects.scss';
 
 const Projects = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { projects, loading, error } = useSelector((state) => state.projects);
   const [selectedProject, setSelectedProject] = useState(null);
   const [hoveredProject, setHoveredProject] = useState(null);
 
-  // 추후 API에서 가져올 데이터 구조
-  const projects = [
-    {
-      id: 1,
-      title: '2차 프로젝트',
-      description: '프로젝트 설명',
-      image: '',
-      technologies: ['React', 'Node.js', 'MySQL'],
-      troubleshooting: '문제 해결 내용',
-      improvement: '개선 사항',
-      serial: 'ID: PROJECT-2024-001',
-    },
-    {
-      id: 2,
-      title: '포트폴리오 웹사이트',
-      description: '현재 프로젝트',
-      image: '',
-      technologies: ['React', 'Vite', 'Redux Toolkit'],
-      troubleshooting: '',
-      improvement: '',
-      serial: 'ID: PROJECT-2024-002',
-    },
-  ];
+  useEffect(() => {
+    if (loading === 'idle') {
+      dispatch(fetchProjects());
+    }
+  }, [dispatch, loading]);
 
   const handleProjectClick = (project) => {
     setSelectedProject(project);
@@ -41,12 +27,48 @@ const Projects = () => {
     setSelectedProject(null);
   };
 
+  // 로딩 중 UI
+  if (loading === 'pending') {
+    return (
+      <section id="projects" className="projects">
+        <div className="projects__container">
+          <h2 className="projects__title neon-text">{t('projects.title')}</h2>
+          <div className="projects__loading">
+            <span className="projects__loading-text">LOADING PROJECTS...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // 에러 발생 UI
+  if (error) {
+    return (
+      <section id="projects" className="projects">
+        <div className="projects__container">
+          <h2 className="projects__title neon-text">{t('projects.title')}</h2>
+          <div className="projects__error">
+            <span className="projects__error-text">ERROR: {error}</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="projects" className="projects">
       <div className="projects__container">
         <h2 className="projects__title neon-text">{t('projects.title')}</h2>
         <div className="projects__grid">
-          {projects.map((project, index) => (
+          {projects && projects.length > 0 ? (
+            projects.map((project, index) => {
+              const serial = `ID: PROJECT-${String(project.id).padStart(6, '0')}`;
+              const techStack = project.tech_stack || [];
+              const firstImage = project.images && project.images.length > 0 
+                ? project.images[0].image_url 
+                : null;
+
+              return (
             <motion.div
               key={project.id}
               className="projects__card"
@@ -64,8 +86,11 @@ const Projects = () => {
                   hoveredProject === project.id ? 'projects__card-image--hover' : ''
                 }`}
               >
-                {project.image ? (
-                  <img src={project.image} alt={project.title} />
+                {firstImage ? (
+                  <img 
+                    src={firstImage.startsWith('http') ? firstImage : `http://localhost:3000${firstImage}`} 
+                    alt={project.title_ko || project.title} 
+                  />
                 ) : (
                   <div className="projects__card-placeholder">
                     <span className="projects__card-placeholder-text">
@@ -75,11 +100,15 @@ const Projects = () => {
                 )}
               </div>
               <div className="projects__card-content">
-                <div className="projects__card-serial">{project.serial}</div>
-                <h3 className="projects__card-title">{project.title}</h3>
-                <p className="projects__card-description">{project.description}</p>
+                <div className="projects__card-serial">{serial}</div>
+                <h3 className="projects__card-title">
+                  {project.title_ko || project.title}
+                </h3>
+                <p className="projects__card-description">
+                  {project.role_summary || project.description}
+                </p>
                 <div className="projects__card-tags">
-                  {project.technologies.map((tech) => (
+                  {techStack.map((tech) => (
                     <span key={tech} className="projects__card-tag">
                       [{tech}]
                     </span>
@@ -90,7 +119,13 @@ const Projects = () => {
                 </button>
               </div>
             </motion.div>
-          ))}
+              );
+            })
+          ) : (
+            <div className="projects__empty">
+              <span className="projects__empty-text">NO PROJECTS FOUND</span>
+            </div>
+          )}
         </div>
       </div>
       <AnimatePresence>

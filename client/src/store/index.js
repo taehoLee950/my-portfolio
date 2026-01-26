@@ -1,17 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
-// slices import는 추후 추가 예정
-// import projectSlice from './slices/projectSlice';
-// import inquirySlice from './slices/inquirySlice';
+import projectReducer from './slices/projectSlice.js';
+import skillCaseReducer from './slices/skillCaseSlice.js';
+import authReducer from './slices/authSlice.js';
 
 export const store = configureStore({
   reducer: {
-    // project: projectSlice,
-    // inquiry: inquirySlice,
+    auth: authReducer,
+    projects: projectReducer,
+    skillCases: skillCaseReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [],
+        ignoredActions: ['auth/login/fulfilled', 'projects/create', 'projects/update', 'skillCases/create', 'skillCases/update'],
+        ignoredPaths: ['auth.user', 'projects.projects', 'skillCases.skillCases'],
       },
     }),
 });
