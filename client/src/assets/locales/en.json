@@ -7,9 +7,13 @@
     "contact": "Contact"
   },
   "hero": {
-    "title": "Developing with passion,",
+    "title": "From Restaurant Service to Full-stack Engineering,",
     "name": "Taeho Lee",
-    "subtitle": "here."
+    "subtitle": "here.",
+    "status": "Currently_Seeking_Opportunities",
+    "focus": "Full-stack_Architecture",
+    "github": "GitHub",
+    "notion": "Notion Portfolio"
   },
   "techStack": {
     "title": "Tech Stack",

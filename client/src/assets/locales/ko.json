@@ -7,9 +7,13 @@
     "contact": "연락하기"
   },
   "hero": {
-    "title": "룰루랄라 개발하는",
+    "title": "미국 레스토랑에서 풀스택의 세계로,",
     "name": "이태호",
-    "subtitle": "입니다."
+    "subtitle": "입니다.",
+    "status": "현재_구직_중 (Active)",
+    "focus": "Full-stack_Architecture",
+    "github": "깃허브",
+    "notion": "노션 포트폴리오"
   },
   "techStack": {
     "title": "기술 스택",

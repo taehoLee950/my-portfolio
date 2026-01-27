@@ -1,187 +1,189 @@
-@import '../../styles/constants/_colors.scss';
+@import "../../styles/constants/_colors.scss";
 
 .hero {
   min-height: 100vh;
+  background: #050505;
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 8rem 2rem 4rem;
-  background: $bg-void;
-  position: relative;
   overflow: hidden;
 
-  &__binary-bg {
+  // 1. 배경 디테일 (스캔라인 & 노이즈)
+  &__scanline {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 0, 0, 0.1) 50%
+    );
+    background-size: 100% 4px;
+    z-index: 2;
     pointer-events: none;
-    z-index: 0;
-  }
-
-  &__binary-item {
-    position: absolute;
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: $neon-cyan;
-    opacity: 0.1;
-    user-select: none;
-    animation: float 20s infinite ease-in-out;
-  }
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0) translateX(0);
-    }
-    50% {
-      transform: translateY(-20px) translateX(10px);
-    }
   }
 
   &__container {
-    max-width: 1200px;
-    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 2rem;
     align-items: center;
-    position: relative;
-    z-index: 1;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-      text-align: center;
-    }
+    z-index: 5;
   }
 
-  &__content {
-    color: $text-primary;
+  // 2. 텍스트 영역 디자인
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba($neon-cyan, 0.1);
+    color: $neon-cyan;
+    padding: 5px 12px;
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.8rem;
+    border-left: 3px solid $neon-cyan;
+    margin-bottom: 1.5rem;
   }
 
   &__title {
-    font-size: 3.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 1.5rem;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 2px;
+    font-size: 4rem;
+    line-height: 1.1;
+    font-family: "Orbitron", sans-serif;
+    margin-bottom: 2rem;
 
-    @media (max-width: 768px) {
-      font-size: 2.5rem;
+    .hero__name {
+      color: $neon-cyan;
+      text-shadow: 0 0 15px rgba($neon-cyan, 0.6);
+      position: relative;
+      &::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: $neon-pink;
+        opacity: 0;
+        z-index: -1;
+      }
+      &--glitch::after {
+        animation: glitch-anim 0.3s infinite;
+        opacity: 0.7;
+      }
     }
   }
 
-  &__name {
-    color: $neon-cyan;
-    display: inline-block;
-    text-shadow: $glow-cyan;
-    position: relative;
-    transition: all 0.3s ease;
-    cursor: pointer;
-
-    &:hover {
-      color: $neon-pink;
-      text-shadow: $glow-pink;
-    }
-
-    &--glitch {
-      animation: glitchRGB 0.5s ease;
-    }
-  }
-
-  &__subtitle {
-    font-size: 1.25rem;
-    opacity: 0.9;
-    line-height: 1.6;
-    color: $text-secondary;
-    font-family: 'Courier New', monospace;
-  }
-
-  &__image {
-    width: 100%;
-    height: 400px;
+  // 3. 터미널 정보창
+  &__terminal {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba($neon-cyan, 0.2);
+    padding: 1.5rem;
+    font-family: "Courier New", monospace;
+    max-width: 500px;
+    margin-bottom: 3rem;
     position: relative;
 
-    @media (max-width: 768px) {
-      height: 300px;
+    &-row {
+      margin-bottom: 0.5rem;
+      .label {
+        color: $neon-pink;
+        margin-right: 10px;
+      }
+      .value {
+        color: #fff;
+      }
+      .status-active {
+        color: #00ffaa;
+        animation: blink 1s infinite;
+      }
     }
   }
 
-  &__image-frame {
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 243, 255, 0.05);
-    border: 2px solid $neon-cyan;
-    box-shadow: $glow-cyan, inset 0 0 50px rgba(0, 243, 255, 0.1);
-    clip-path: polygon(
-      0% 10%,
-      10% 0%,
-      90% 0%,
-      100% 10%,
-      100% 90%,
-      90% 100%,
-      10% 100%,
-      0% 90%
-    );
-    position: relative;
-    overflow: hidden;
+  // 4. 버튼 액션
+  &__actions {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        45deg,
-        transparent 30%,
-        rgba(0, 243, 255, 0.1) 50%,
-        transparent 70%
-      );
-      animation: rotate 10s linear infinite;
+    .hero__btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba($neon-cyan, 0.7);
+      text-decoration: none;
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+
+      &:hover {
+        color: #fff;
+        text-shadow: 0 0 10px $neon-cyan;
+        transform: translateY(-2px);
+      }
     }
   }
 
-  @keyframes rotate {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  &__profile-picture {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Cover the frame while maintaining aspect ratio */
+  // 5. 이미지 프레임 & 스캐너 효과
+  &__image-frame {
     position: relative;
-    z-index: 1;
-    filter: grayscale(100%) brightness(80%) contrast(120%); /* Optional: apply a cyberpunk filter */
-    transition: filter 0.5s ease;
-    animation: profile-glow 4s infinite alternate; /* Apply glowing animation */
+    border: 1px solid $neon-cyan;
+    padding: 10px;
+    background: rgba($neon-cyan, 0.05);
+    clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
 
-    &:hover {
-      filter: grayscale(0%) brightness(100%) contrast(100%); /* Remove filter on hover */
-      animation-play-state: paused; /* Pause animation on hover */
+    .hero__profile-img {
+      width: 100%;
+      display: block;
+      filter: grayscale(1) contrast(1.2);
+      mix-blend-mode: screen;
+    }
+
+    .hero__image-scanner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: $neon-cyan;
+      box-shadow: 0 0 15px $neon-cyan;
+      animation: scanning 3s linear infinite;
     }
   }
+}
 
-  @keyframes profile-glow {
-    0% {
-      filter: grayscale(100%) brightness(80%) contrast(120%);
-    }
-    50% {
-      filter: grayscale(0%) brightness(100%) contrast(100%);
-    }
-    100% {
-      filter: grayscale(100%) brightness(80%) contrast(120%);
-    }
+// 애니메이션 정의
+@keyframes scanning {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes glitch-anim {
+  0% {
+    clip: rect(20px, 9999px, 40px, 0);
+    transform: translate(-2px, -2px);
+  }
+  50% {
+    clip: rect(60px, 9999px, 80px, 0);
+    transform: translate(2px, 2px);
+  }
+  100% {
+    clip: rect(10px, 9999px, 30px, 0);
+    transform: translate(-2px, 2px);
   }
 }
