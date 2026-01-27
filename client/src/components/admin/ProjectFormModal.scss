@@ -1,0 +1,192 @@
+@import "../../styles/constants/_colors.scss";
+
+.project-form-modal {
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(5, 5, 10, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(10px);
+    padding: 20px;
+  }
+
+  &__content {
+    background-color: #0d0d15;
+    padding: 30px;
+    border: 1px solid $neon-cyan;
+    box-shadow:
+      0 0 20px rgba(0, 243, 255, 0.2),
+      inset 0 0 10px rgba(0, 243, 255, 0.1);
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    color: $text-primary;
+    font-family: "Courier New", monospace;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $neon-cyan;
+    }
+
+    h2 {
+      text-align: left;
+      margin-bottom: 30px;
+      color: $neon-cyan;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+      padding-bottom: 10px;
+    }
+  }
+
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: $neon-pink;
+    font-family: "Courier New", monospace;
+    transition: all 0.3s ease;
+    &:hover {
+      text-shadow: 0 0 10px $neon-pink;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    color: $neon-yellow;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    .required {
+      color: $neon-red;
+      margin-left: 4px;
+    }
+  }
+
+  input[type="text"],
+  input[type="url"],
+  textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    padding: 12px;
+    color: #fff; // 기본 글자색
+    font-family: "Courier New", monospace;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+
+    // [수정] 포커스 되었을 때 (타이핑 중일 때) 스타일
+    &:focus {
+      outline: none;
+      background: #05050a; // 배경을 아주 어둡게 해서 글자를 돋보이게 함
+      border-color: $neon-cyan;
+      color: $neon-cyan; // 글자색을 네온색으로 변경
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+
+      // [핵심] 두 번째 사진처럼 글자가 선명하게 빛나도록 설정
+      text-shadow:
+        0 0 5px $neon-cyan,
+        0 0 10px rgba(0, 243, 255, 0.8);
+    }
+
+    // 값이 이미 입력되어 있을 때 스타일 유지
+    &:not(:placeholder-shown):not(:focus) {
+      background: rgba(
+        255,
+        255,
+        255,
+        0.9
+      ); // 기존처럼 흰색 배경 유지 (원하실 경우)
+      color: #000;
+      text-shadow: none;
+    }
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.2);
+      text-shadow: none;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.help-text {
+  font-size: 0.75rem;
+  color: $neon-pink;
+  margin-top: 5px;
+  opacity: 0.8;
+}
+
+.cyber-button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  background: transparent;
+  color: $neon-cyan;
+  border: 1px solid $neon-cyan;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+
+  &:hover:not(:disabled) {
+    background: $neon-cyan;
+    color: #000;
+    box-shadow: 0 0 20px $neon-cyan;
+  }
+  &:disabled {
+    border-color: #444;
+    color: #444;
+    cursor: not-allowed;
+  }
+}
+
+.file-input-wrapper {
+  border: 1px dashed rgba(0, 243, 255, 0.3);
+  padding: 10px;
+  background: rgba(0, 243, 255, 0.02);
+  input[type="file"] {
+    color: $text-secondary;
+    font-size: 0.8rem;
+  }
+}

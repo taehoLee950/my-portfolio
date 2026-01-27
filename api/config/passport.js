@@ -1,1 +1,24 @@
-ÿþ
+import passport from 'passport';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import adminRepository from '../repositories/adminRepository.js';
+
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
+};
+
+passport.use(
+  new JwtStrategy(opts, async (payload, done) => {
+    try {
+      const admin = await adminRepository.findById(payload.id);
+      if (admin) {
+        return done(null, admin);
+      }
+      return done(null, false);
+    } catch (error) {
+      return done(error, false);
+    }
+  })
+);
+
+export default passport;

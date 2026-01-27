@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../../store/slices/authSlice';
 import './Navbar.scss';
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -21,6 +27,15 @@ const Navbar = () => {
   const toggleLanguage = () => {
     const newLang = i18n.language === 'ko' ? 'en' : 'ko';
     i18n.changeLanguage(newLang);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser()).unwrap();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const navItems = [
@@ -62,6 +77,29 @@ const Navbar = () => {
               {i18n.language === 'ko' ? 'EN' : 'KO'}
             </button>
           </li>
+          {/* Admin Navigation */}
+          {isAuthenticated && (
+            <>
+              <li className="navbar__item navbar__item--admin">
+                <RouterLink 
+                  to="/admin/inquiries" 
+                  className="navbar__admin-link"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  [INQUIRIES]
+                </RouterLink>
+              </li>
+              <li className="navbar__item navbar__item--admin">
+                <button
+                  className="navbar__logout-btn"
+                  onClick={handleLogout}
+                  aria-label="Logout"
+                >
+                  [LOGOUT]
+                </button>
+              </li>
+            </>
+          )}
         </ul>
         <button
           className="navbar__toggle"

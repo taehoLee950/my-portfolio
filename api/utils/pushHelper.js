@@ -1,1 +1,37 @@
-��
+import webpush from 'web-push';
+import adminRepository from '../repositories/adminRepository.js';
+
+// VAPID 키 설정
+webpush.setVapidDetails(
+  process.env.VAPID_SUBJECT || 'mailto:admin@example.com',
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
+
+export const sendPushNotification = async (notification) => {
+  try {
+    // 모든 관리자의 push subscription 가져오기
+    const admins = await adminRepository.findAll();
+    
+    const pushPromises = admins
+      .filter((admin) => admin.push_subscription)
+      .map((admin) => {
+        try {
+          return webpush.sendNotification(
+            admin.push_subscription,
+            JSON.stringify(notification)
+          );
+        } catch (error) {
+          console.error('Push notification failed for admin:', admin.id, error);
+          return null;
+        }
+      });
+
+    await Promise.allSettled(pushPromises);
+    return { success: true };
+  } catch (error) {
+    console.error('Push notification error:', error);
+    // 푸시 알림 실패해도 메인 로직은 계속되도록 에러를 throw하지 않음
+    return { success: false, error: error.message };
+  }
+};

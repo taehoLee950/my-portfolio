@@ -1,1 +1,80 @@
-��
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import AppError from '../utils/appError.js';
+import adminRepository from '../repositories/adminRepository.js';
+
+const authService = {
+  // 로그인
+  login: async (adminId, password) => {
+    const admin = await adminRepository.findByAdminId(adminId);
+    
+    if (!admin) {
+      throw new AppError('Invalid credentials', 401, 'INVALID_CREDENTIALS');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid) {
+      throw new AppError('Invalid credentials', 401, 'INVALID_CREDENTIALS');
+    }
+
+    // JWT 토큰 생성
+    const accessToken = jwt.sign(
+      { id: admin.id, adminId: admin.admin_id },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRE || '1h' }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: admin.id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: process.env.JWT_REFRESH_EXPIRE || '7d' }
+    );
+
+    // Refresh Token 저장
+    await adminRepository.updateRefreshToken(admin.id, refreshToken);
+
+    return {
+      accessToken,
+      refreshToken,
+      admin: {
+        id: admin.id,
+        adminId: admin.admin_id,
+      },
+    };
+  },
+
+  // Refresh Token으로 Access Token 갱신
+  refreshToken: async (refreshToken) => {
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+      const admin = await adminRepository.findById(decoded.id);
+
+      if (!admin || admin.refresh_token !== refreshToken) {
+        throw new AppError('Invalid refresh token', 401, 'INVALID_REFRESH_TOKEN');
+      }
+
+      const accessToken = jwt.sign(
+        { id: admin.id, adminId: admin.admin_id },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRE || '1h' }
+      );
+
+      return { accessToken };
+    } catch (error) {
+      throw new AppError('Invalid refresh token', 401, 'INVALID_REFRESH_TOKEN');
+    }
+  },
+
+  // Push Subscription 저장
+  savePushSubscription: async (adminId, subscription) => {
+    const admin = await adminRepository.findByAdminId(adminId);
+    if (!admin) {
+      throw new AppError('Admin not found', 404, 'ADMIN_NOT_FOUND');
+    }
+
+    await adminRepository.updatePushSubscription(admin.id, subscription);
+    return { message: 'Push subscription saved' };
+  },
+};
+
+export default authService;

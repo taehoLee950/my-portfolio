@@ -1,1 +1,85 @@
-ÿþ
+import AppError from '../utils/appError.js';
+import { captureException } from '@sentry/node';
+
+const handleSequelizeError = (err) => {
+  if (err.name === 'SequelizeValidationError') {
+    const messages = err.errors.map((e) => e.message).join(', ');
+    return new AppError(messages, 400, 'VALIDATION_ERROR');
+  }
+  if (err.name === 'SequelizeUniqueConstraintError') {
+    return new AppError('Duplicate entry. This value already exists.', 409, 'DUPLICATE_ERROR');
+  }
+  if (err.name === 'SequelizeForeignKeyConstraintError') {
+    return new AppError('Foreign key constraint failed.', 400, 'FOREIGN_KEY_ERROR');
+  }
+  if (err.name === 'SequelizeDatabaseError') {
+    return new AppError('Database error occurred.', 500, 'DATABASE_ERROR');
+  }
+  return err;
+};
+
+const handleJWTError = () => {
+  return new AppError('Invalid token. Please log in again.', 401, 'JWT_ERROR');
+};
+
+const handleJWTExpiredError = () => {
+  return new AppError('Your token has expired. Please log in again.', 401, 'JWT_EXPIRED');
+};
+
+const sendErrorDev = (err, res) => {
+  res.status(err.statusCode).json({
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack,
+  });
+};
+
+const sendErrorProd = (err, res) => {
+  // Operational, trusted error: send message to client
+  if (err.isOperational) {
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+      errorCode: err.errorCode,
+    });
+  } else {
+    // Programming or other unknown error: don't leak error details
+    console.error('ERROR ðŸ’¥', err);
+    res.status(500).json({
+      status: 'error',
+      message: 'Something went wrong!',
+    });
+  }
+};
+
+const errorMiddleware = (err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+
+  // Send to Sentry
+  if (process.env.NODE_ENV === 'production' && !err.isOperational) {
+    captureException(err);
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    sendErrorDev(err, res);
+  } else {
+    let error = { ...err };
+    error.message = err.message;
+
+    if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+      error = handleSequelizeError(error);
+    }
+    if (error.name === 'JsonWebTokenError') {
+      error = handleJWTError();
+    }
+    if (error.name === 'TokenExpiredError') {
+      error = handleJWTExpiredError();
+    }
+
+    sendErrorProd(error, res);
+  }
+};
+
+export default errorMiddleware;

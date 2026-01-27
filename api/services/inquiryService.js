@@ -1,1 +1,92 @@
-��
+import AppError from '../utils/appError.js';
+import inquiryRepository from '../repositories/inquiryRepository.js';
+import { sendInquiryEmail } from '../utils/mailer.js';
+import { sendPushNotification } from '../utils/pushHelper.js';
+import sequelize from '../config/sequelize.js';
+
+const inquiryService = {
+  // 문의 생성 (트랜잭션 처리)
+  createInquiry: async (data, ipAddress) => {
+    const transaction = await sequelize.transaction();
+
+    try {
+      // 스팸 방지: 같은 IP에서 5분 이내 문의 확인
+      const recentInquiry = await inquiryRepository.findRecentByIp(ipAddress, 5);
+      if (recentInquiry) {
+        throw new AppError('Please wait before submitting another inquiry', 429, 'RATE_LIMIT_EXCEEDED');
+      }
+
+      // 메시지 Sanitization (XSS 방지)
+      const sanitizedMessage = data.message
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+
+      // 문의 저장
+      const inquiry = await inquiryRepository.create(
+        {
+          email: data.email,
+          message: sanitizedMessage,
+          ip_address: ipAddress,
+        },
+        { transaction }
+      );
+
+      // 이메일 발송
+      await sendInquiryEmail(inquiry.email, inquiry.message);
+
+      // 푸시 알림 발송 (관리자에게)
+      await sendPushNotification({
+        title: 'New Inquiry Received',
+        body: `From: ${inquiry.email}`,
+        data: { inquiryId: inquiry.id },
+      });
+
+      await transaction.commit();
+      return inquiry;
+    } catch (error) {
+      await transaction.rollback();
+      if (error instanceof AppError) {
+        throw error;
+      }
+      throw new AppError('Failed to create inquiry', 500, 'CREATE_ERROR');
+    }
+  },
+
+  // 모든 문의 조회 (관리자용)
+  getAllInquiries: async (options = {}) => {
+    try {
+      const result = await inquiryRepository.findAll(options);
+      return result;
+    } catch (error) {
+      throw new AppError('Failed to fetch inquiries', 500, 'FETCH_ERROR');
+    }
+  },
+
+  // 문의 상세 조회
+  getInquiryById: async (id) => {
+    const inquiry = await inquiryRepository.findById(id);
+    if (!inquiry) {
+      throw new AppError('Inquiry not found', 404, 'INQUIRY_NOT_FOUND');
+    }
+    return inquiry;
+  },
+
+  // 문의 상태 업데이트
+  updateInquiryStatus: async (id, status) => {
+    const inquiry = await inquiryRepository.findById(id);
+    if (!inquiry) {
+      throw new AppError('Inquiry not found', 404, 'INQUIRY_NOT_FOUND');
+    }
+
+    if (!['unseen', 'seen', 'replied'].includes(status)) {
+      throw new AppError('Invalid status', 400, 'INVALID_STATUS');
+    }
+
+    await inquiryRepository.updateStatus(id, status);
+    return await inquiryRepository.findById(id);
+  },
+};
+
+export default inquiryService;

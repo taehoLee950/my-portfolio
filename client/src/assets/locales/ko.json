@@ -7,23 +7,41 @@
     "contact": "연락하기"
   },
   "hero": {
-    "title": "룰루랄라 개발하는",
+    "title": "미국 레스토랑에서 풀스택의 세계로,",
     "name": "이태호",
-    "subtitle": "입니다."
+    "subtitle": "입니다.",
+    "status": "현재_구직_중 (Active)",
+    "focus": "Full-stack_Architecture",
+    "github": "깃허브",
+    "notion": "노션 포트폴리오"
   },
   "techStack": {
     "title": "기술 스택",
-    "backend": {
-      "title": "Backend",
-      "description": "Node.js, Express, Sequelize를 활용한 서버 개발"
-    },
+    "summary": "프론트엔드, 백엔드, 데이터베이스 기술의 견고한 조화와 필수 개발 도구, 그리고 뛰어난 언어 능력을 바탕으로 전문적인 개발 역량을 발휘합니다.",
     "frontend": {
-      "title": "Frontend",
-      "description": "React, Redux Toolkit을 통한 상태 관리"
+      "title": "프론트엔드",
+      "skills": "JavaScript (ES6+), React, PWA",
+      "description": "모던 웹 개발에 능숙하며, React를 활용한 인터랙티브 UI 구축과 PWA 기능을 통한 사용자 경험 향상에 기여합니다."
+    },
+    "backend": {
+      "title": "백엔드",
+      "skills": "Node.js (Express.js), Sequelize CLI",
+      "description": "Node.js와 Express.js를 활용한 서버 개발 경험이 풍부하며, Sequelize CLI를 통해 효율적인 데이터베이스 스키마 관리 및 ORM을 수행합니다."
     },
     "database": {
-      "title": "Database",
-      "description": "MySQL 동시성 제어 및 Redis 고도화 예정"
+      "title": "데이터베이스",
+      "skills": "MySQL",
+      "description": "MySQL 관계형 데이터베이스 관리에 숙련되어 있으며, 데이터 무결성 및 효율적인 쿼리 처리를 통해 견고한 애플리케이션을 구축합니다."
+    },
+    "tools": {
+      "title": "도구",
+      "skills": "Git, Notion, Slack",
+      "description": "Git을 통한 버전 관리, Notion을 활용한 프로젝트 관리 및 문서화, Slack을 통한 팀 협업에 능숙합니다."
+    },
+    "language": {
+      "title": "언어",
+      "skills": "영어 (Fluent), 일본어 (Basic), 한국어 (Native)",
+      "description": "미국 7년 거주 경험으로 영어 기술 문서 이해 및 글로벌 협업이 원활하며, 기본적인 일본어와 모국어인 한국어에 능통합니다."
     }
   },
   "projects": {
@@ -31,6 +49,13 @@
     "viewDetail": "상세 보기",
     "troubleshooting": "문제 해결",
     "improvement": "개선 사항"
+  },
+  "projectModal": {
+    "techStack": "사용 기술",
+    "myTasks": "담당 업무",
+    "github": "깃허브",
+    "referenceLink": "참고 링크",
+    "metadata": "메타데이터"
   },
   "learning": {
     "title": "학습 기술 사용 사례",

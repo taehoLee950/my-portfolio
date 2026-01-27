@@ -1,1 +1,70 @@
-��
+import asyncHandler from '../utils/asyncHandler.js';
+import inquiryService from '../services/inquiryService.js';
+
+const inquiryController = {
+  // 문의 생성
+  createInquiry: asyncHandler(async (req, res, next) => {
+    const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+    const inquiry = await inquiryService.createInquiry(req.body, ipAddress);
+
+    res.status(201).json({
+      status: 'success',
+      data: inquiry,
+    });
+  }),
+
+  // 모든 문의 조회 (관리자용)
+  getAllInquiries: asyncHandler(async (req, res, next) => {
+    const { status, page = 1, limit = 50 } = req.query;
+    const offset = (page - 1) * limit;
+
+    const result = await inquiryService.getAllInquiries({
+      status,
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        inquiries: result.rows,
+        total: result.count,
+        page: parseInt(page),
+        limit: parseInt(limit),
+      },
+    });
+  }),
+
+  // 문의 상세 조회 (관리자용)
+  getInquiryById: asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const inquiry = await inquiryService.getInquiryById(id);
+
+    res.status(200).json({
+      status: 'success',
+      data: inquiry,
+    });
+  }),
+
+  // 문의 상태 업데이트 (관리자용)
+  updateInquiryStatus: asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Status is required',
+      });
+    }
+
+    const inquiry = await inquiryService.updateInquiryStatus(id, status);
+
+    res.status(200).json({
+      status: 'success',
+      data: inquiry,
+    });
+  }),
+};
+
+export default inquiryController;

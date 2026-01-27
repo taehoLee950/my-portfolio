@@ -1,1 +1,15 @@
-ÿþ
+import passport from 'passport';
+import AppError from '../utils/appError.js';
+
+export const authenticate = (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (err, admin, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!admin) {
+      return next(new AppError('Authentication required', 401, 'AUTH_REQUIRED'));
+    }
+    req.admin = admin;
+    next();
+  })(req, res, next);
+};

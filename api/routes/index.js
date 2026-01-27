@@ -1,1 +1,14 @@
-ÿþ
+import express from 'express';
+const router = express.Router();
+
+import authRoutes from './authRoutes.js';
+import projectRoutes from './projectRoutes.js';
+import inquiryRoutes from './inquiryRoutes.js';
+import skillCaseRoutes from './skillCaseRoutes.js';
+
+router.use('/auth', authRoutes);
+router.use('/projects', projectRoutes);
+router.use('/inquiries', inquiryRoutes);
+router.use('/skill-cases', skillCaseRoutes);
+
+export default router;

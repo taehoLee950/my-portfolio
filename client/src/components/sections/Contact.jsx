@@ -12,6 +12,7 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [focusedField, setFocusedField] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,11 +33,18 @@ const Contact = () => {
     // 유효성 검사
     if (!formData.name || !formData.email || !formData.message) {
       setSubmitStatus({ type: 'error', message: '모든 필드를 입력해주세요.' });
+      // 진동 효과
+      if (navigator.vibrate) {
+        navigator.vibrate(200);
+      }
       return;
     }
 
     if (!validateEmail(formData.email)) {
       setSubmitStatus({ type: 'error', message: '올바른 이메일 형식을 입력해주세요.' });
+      if (navigator.vibrate) {
+        navigator.vibrate(200);
+      }
       return;
     }
 
@@ -47,8 +55,17 @@ const Contact = () => {
       await inquiryService.createInquiry(formData);
       setSubmitStatus({ type: 'success', message: t('contact.success') });
       setFormData({ name: '', email: '', message: '' });
+      
+      // 전송 성공 시 화면 번쩍임 효과
+      document.body.style.filter = 'brightness(1.5)';
+      setTimeout(() => {
+        document.body.style.filter = 'brightness(1)';
+      }, 100);
     } catch (error) {
       setSubmitStatus({ type: 'error', message: t('contact.error') });
+      if (navigator.vibrate) {
+        navigator.vibrate(200);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -57,49 +74,76 @@ const Contact = () => {
   return (
     <section id="contact" className="contact">
       <div className="contact__container">
-        <h2 className="contact__title">{t('contact.title')}</h2>
+        <h2 className="contact__title neon-text">{t('contact.title')}</h2>
         <form className="contact__form" onSubmit={handleSubmit}>
           <div className="contact__field">
             <label htmlFor="name" className="contact__label">
               {t('contact.name')}
             </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="contact__input"
-              required
-            />
+            <div
+              className={`contact__input-wrapper ${
+                focusedField === 'name' ? 'contact__input-wrapper--focused' : ''
+              }`}
+            >
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                onFocus={() => setFocusedField('name')}
+                onBlur={() => setFocusedField(null)}
+                className="contact__input"
+                required
+              />
+              <div className="contact__input-border"></div>
+            </div>
           </div>
           <div className="contact__field">
             <label htmlFor="email" className="contact__label">
               {t('contact.email')}
             </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="contact__input"
-              required
-            />
+            <div
+              className={`contact__input-wrapper ${
+                focusedField === 'email' ? 'contact__input-wrapper--focused' : ''
+              }`}
+            >
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField(null)}
+                className="contact__input"
+                required
+              />
+              <div className="contact__input-border"></div>
+            </div>
           </div>
           <div className="contact__field">
             <label htmlFor="message" className="contact__label">
               {t('contact.message')}
             </label>
-            <textarea
-              id="message"
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              className="contact__textarea"
-              rows="6"
-              required
-            />
+            <div
+              className={`contact__input-wrapper ${
+                focusedField === 'message' ? 'contact__input-wrapper--focused' : ''
+              }`}
+            >
+              <textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                onFocus={() => setFocusedField('message')}
+                onBlur={() => setFocusedField(null)}
+                className="contact__textarea"
+                rows="6"
+                required
+              />
+              <div className="contact__input-border"></div>
+            </div>
           </div>
           {submitStatus && (
             <div
@@ -113,7 +157,7 @@ const Contact = () => {
             className="contact__submit"
             disabled={isSubmitting}
           >
-            {isSubmitting ? t('contact.sending') : t('contact.send')}
+            {isSubmitting ? t('contact.sending') : 'EXECUTE'}
           </button>
         </form>
       </div>

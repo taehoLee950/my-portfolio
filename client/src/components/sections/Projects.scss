@@ -1,118 +1,328 @@
-@import '../../styles/constants/_colors.scss';
+@import "../../styles/constants/_colors.scss";
 
 .projects {
-  padding: 6rem 2rem;
-  background: white;
+  padding: 12rem 2rem;
+  background: #00050a;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
 
-  &__container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  &__title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 4rem;
-    color: $text-primary;
-
-    @media (max-width: 768px) {
-      font-size: 2rem;
+  &__cyber-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    .grid-lines {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background-image:
+        linear-gradient(rgba($neon-cyan, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba($neon-cyan, 0.08) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: perspective(1000px) rotateX(60deg);
+      mask-image: radial-gradient(circle, black, transparent 80%);
     }
   }
 
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  &__card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: box-shadow 0.3s ease;
-
-    &:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-  }
-
-  &__card-image {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    background: #f0f0f0;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  &__card-placeholder {
-    width: 100%;
-    height: 100%;
+  &__header {
+    margin-bottom: 10rem;
+    position: relative;
+    z-index: 10;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: $text-secondary;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    flex-direction: column;
+    align-items: center; // 가로축 중앙 정렬
+    text-align: center;
+
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .projects__title {
+      font-size: 5rem;
+      font-family: "Orbitron", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 20px;
+      margin-bottom: 1.5rem;
+      color: #fff;
+      text-shadow: 0 0 20px rgba($neon-cyan, 0.5);
+      position: relative;
+
+      &::before,
+      &::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+        display: none; // 평소엔 숨김
+      }
+
+      &:hover {
+        &::before {
+          display: block;
+          animation: glitch-anim 0.4s infinite linear alternate-reverse;
+          color: $neon-pink;
+          left: 3px;
+          z-index: -1;
+        }
+        &::after {
+          display: block;
+          animation: glitch-anim 0.4s infinite linear alternate;
+          color: $neon-cyan;
+          left: -3px;
+          z-index: -1;
+        }
+      }
+    }
+
+    .system-path {
+      font-family: "Courier New", monospace;
+      color: $neon-green;
+      font-size: 1.2rem;
+      background: rgba($neon-green, 0.1);
+      padding: 8px 24px;
+      border-left: 4px solid $neon-green;
+      display: flex;
+      gap: 12px;
+      box-shadow: 0 0 15px rgba($neon-green, 0.1);
+
+      .blink {
+        animation: blink 1s infinite;
+      }
+    }
   }
 
-  &__card-content {
-    padding: 1.5rem;
+  .admin-actions-top {
+    margin-top: 2.5rem;
+    .admin-button {
+      background: transparent;
+      border: 1px solid $neon-cyan;
+      color: $neon-cyan;
+      padding: 10px 20px;
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s;
+      &:hover {
+        background: $neon-cyan;
+        color: #000;
+        box-shadow: 0 0 20px $neon-cyan;
+      }
+    }
   }
 
-  &__card-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: $text-primary;
-  }
-
-  &__card-description {
-    color: $text-secondary;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-  }
-
-  &__card-tags {
+  &__scatter-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    justify-content: center;
+    gap: 6rem 4rem;
+    max-width: 1500px;
+    margin: 0 auto;
+    perspective: 1200px;
   }
 
-  &__card-tag {
-    background: $primary-color;
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-
-  &__card-button {
-    width: 100%;
-    padding: 0.75rem;
-    background: $primary-color;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
+  &__node {
+    position: relative;
+    width: 320px;
     cursor: pointer;
-    transition: background 0.3s ease;
 
-    &:hover {
-      background: darken($primary-color, 10%);
+    &.node-1 {
+      --rot: -2deg;
+      animation: float 6s ease-in-out infinite;
     }
+    &.node-2 {
+      --rot: 2deg;
+      animation: float 5s ease-in-out infinite reverse;
+    }
+    &.node-3 {
+      --rot: -1.5deg;
+      animation: float 7s ease-in-out infinite 1s;
+    }
+    &.node-4 {
+      --rot: 3deg;
+      animation: float 5.5s ease-in-out infinite 0.5s;
+    }
+
+    .node-content {
+      background: rgba(0, 10, 20, 0.9);
+      border: 1px solid rgba($neon-cyan, 0.3);
+      padding: 12px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%);
+
+      &:hover {
+        border-color: $neon-pink;
+        box-shadow: 0 15px 35px rgba($neon-pink, 0.15);
+        transform: translateY(-10px) scale(1.02);
+      }
+    }
+
+    .node-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.75rem;
+      color: $neon-cyan;
+      border-bottom: 1px solid rgba($neon-cyan, 0.15);
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        background: $neon-green;
+        border-radius: 50%;
+        box-shadow: 0 0 8px $neon-green;
+        margin-left: auto;
+      }
+    }
+
+    .node-image-wrapper {
+      position: relative;
+      height: 190px;
+      margin: 12px 0;
+      background: #000;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.75;
+        transition: 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+      }
+      &:hover img {
+        opacity: 1;
+        transform: scale(1.15);
+        filter: contrast(1.1) brightness(1.1);
+      }
+    }
+
+    .node-info {
+      padding: 12px;
+      .node-title {
+        font-family: "Courier New", monospace;
+        color: #fff;
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+        font-weight: bold;
+      }
+    }
+
+    .node-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .access-btn {
+        background: $neon-pink;
+        color: #fff;
+        font-size: 0.65rem;
+        padding: 5px 10px;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+      .version {
+        color: #666;
+        font-size: 0.75rem;
+        font-family: "Orbitron", sans-serif;
+      }
+    }
+
+    .node-connector {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba($neon-cyan, 0.4)
+      );
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -2.5px;
+        width: 6px;
+        height: 6px;
+        background: $neon-cyan;
+        border-radius: 50%;
+        box-shadow: 0 0 10px $neon-cyan;
+      }
+    }
+  }
+
+  .node-admin {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+    button {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #333;
+      color: #777;
+      font-size: 0.65rem;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-family: "Orbitron", sans-serif;
+      transition: all 0.2s;
+      &:hover {
+        color: #fff;
+        border-color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+}
+
+@keyframes glitch-anim {
+  0% {
+    clip-path: inset(80% 0 1% 0);
+    transform: translate(-3px, -2px);
+  }
+  20% {
+    clip-path: inset(20% 0 50% 0);
+    transform: translate(3px, 2px);
+  }
+  40% {
+    clip-path: inset(50% 0 30% 0);
+    transform: translate(-3px, 3px);
+  }
+  60% {
+    clip-path: inset(10% 0 70% 0);
+    transform: translate(3px, -2px);
+  }
+  80% {
+    clip-path: inset(40% 0 10% 0);
+    transform: translate(2px, 3px);
+  }
+  100% {
+    clip-path: inset(0% 0 0% 0);
+    transform: translate(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot));
+  }
+  50% {
+    transform: translateY(-20px) rotate(calc(var(--rot) * -1.2));
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
 }

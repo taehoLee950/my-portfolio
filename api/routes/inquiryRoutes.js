@@ -1,1 +1,16 @@
-��
+import express from 'express';
+const router = express.Router();
+
+import inquiryController from '../controllers/inquiryController.js';
+import { authenticate } from '../middlewares/authMiddleware.js';
+import { inquiryLimiter, apiLimiter } from '../middlewares/rateLimiter.js';
+
+// Public route (엄격한 제한)
+router.post('/', inquiryLimiter, inquiryController.createInquiry);
+
+// Admin routes
+router.get('/', authenticate, apiLimiter, inquiryController.getAllInquiries);
+router.get('/:id', authenticate, apiLimiter, inquiryController.getInquiryById);
+router.patch('/:id/status', authenticate, inquiryController.updateInquiryStatus);
+
+export default router;
