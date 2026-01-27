@@ -12,10 +12,12 @@ const assetImages = import.meta.glob(
 const ProjectModal = ({ project, onClose }) => {
   const { i18n } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     setCurrentImageIndex(0);
+    // 모달 오픈 시 스크롤 방지
+    document.body.style.overflow = "hidden";
+    return () => (document.body.style.overflow = "unset");
   }, [project]);
 
   const d = useMemo(() => {
@@ -45,16 +47,8 @@ const ProjectModal = ({ project, onClose }) => {
   const displayImages = useMemo(() => {
     if (!d) return [];
     const images = [];
-    // 한국어 데이터 적용
-    if (d.id === 1) {
-      for (let i = 1; i <= 5; i++) images.push(`daeguWeather${i}.png`);
-    } else if (d.id === 2) {
-      for (let i = 1; i <= 4; i++) images.push(`icemachine${i}.png`);
-    }
     if (d.images && Array.isArray(d.images)) {
-      d.images.forEach((img) => {
-        if (img.image_url) images.push(img.image_url);
-      });
+      d.images.forEach((img) => img.image_url && images.push(img.image_url));
     }
     if (images.length === 0 && d.thumbnail) images.push(d.thumbnail);
     return images;
@@ -71,13 +65,11 @@ const ProjectModal = ({ project, onClose }) => {
     const fullPath = Object.keys(assetImages).find((key) =>
       key.endsWith(`/${fileName}`),
     );
-    if (fullPath) return assetImages[fullPath].default;
-    return fileName.startsWith("http") || fileName.startsWith("/assets")
-      ? fileName
-      : `${import.meta.env.VITE_API_URL || ""}${fileName}`;
+    return fullPath ? assetImages[fullPath].default : fileName;
   };
 
-  const navigateImage = (direction) => {
+  const navigateImage = (e, direction) => {
+    e.stopPropagation();
     setCurrentImageIndex(
       (prev) =>
         (prev + direction + displayImages.length) % displayImages.length,
@@ -119,12 +111,10 @@ const ProjectModal = ({ project, onClose }) => {
                     <motion.img
                       key={displayImages[currentImageIndex]}
                       src={getAssetUrl(displayImages[currentImageIndex])}
-                      alt="Project View"
                       className="project-modal__main-image"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
                     />
                   ) : (
                     <div className="project-modal__no-image">
@@ -137,13 +127,13 @@ const ProjectModal = ({ project, onClose }) => {
                   <>
                     <button
                       className="project-modal__nav project-modal__nav--prev"
-                      onClick={() => navigateImage(-1)}
+                      onClick={(e) => navigateImage(e, -1)}
                     >
                       ‹
                     </button>
                     <button
                       className="project-modal__nav project-modal__nav--next"
-                      onClick={() => navigateImage(1)}
+                      onClick={(e) => navigateImage(e, 1)}
                     >
                       ›
                     </button>
@@ -155,28 +145,16 @@ const ProjectModal = ({ project, onClose }) => {
                 <p className="project-modal__description">{d.role_summary}</p>
                 <div className="project-modal__tags">
                   {techStacks.map((tech, idx) => (
-                    <span
-                      key={`modal-tech-${idx}`}
-                      className="project-modal__tag"
-                    >
+                    <span key={idx} className="project-modal__tag">
                       [{tech}]
                     </span>
                   ))}
                 </div>
 
                 {currentMyTasks && (
-                  <div
-                    className={`project-modal__section ${isFocused ? "project-modal__section--focused" : ""}`}
-                    onMouseEnter={() => setIsFocused(true)}
-                    onMouseLeave={() => setIsFocused(false)}
-                  >
+                  <div className="project-modal__section">
                     <h3>TASK_DETAILS</h3>
-                    <div className="project-modal__task-wrapper">
-                      <p className="project-modal__task-text">
-                        {currentMyTasks}
-                      </p>
-                      <div className="project-modal__input-border"></div>
-                    </div>
+                    <p className="project-modal__task-text">{currentMyTasks}</p>
                   </div>
                 )}
               </div>
