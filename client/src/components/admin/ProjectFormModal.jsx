@@ -35,7 +35,9 @@ const ProjectFormModal = ({ project, onClose }) => {
       : "",
     version: project?.version || 0,
   });
-  const [coverImage, setCoverImage] = useState(null);
+
+  // 파일 여러 개를 담기 위해 배열로 변경
+  const [projectImages, setProjectImages] = useState([]);
 
   useEffect(() => {
     if (error) {
@@ -50,8 +52,9 @@ const ProjectFormModal = ({ project, onClose }) => {
   };
 
   const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setCoverImage(e.target.files[0]);
+    if (e.target.files) {
+      // 선택된 모든 파일을 배열로 변환하여 저장
+      setProjectImages(Array.from(e.target.files));
     }
   };
 
@@ -59,6 +62,7 @@ const ProjectFormModal = ({ project, onClose }) => {
     e.preventDefault();
     const dataToSend = new FormData();
 
+    // 기본 텍스트 필드 추가
     dataToSend.append("title_ko", formData.title_ko);
     dataToSend.append("title_en", formData.title_en);
     dataToSend.append("slug", formData.slug || `project-${Date.now()}`);
@@ -70,12 +74,14 @@ const ProjectFormModal = ({ project, onClose }) => {
     dataToSend.append("reference_link", formData.reference_link);
     dataToSend.append("version", formData.version);
 
+    // 기술 스택 배열화
     const techArray = formData.tech_stack
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
     dataToSend.append("tech_stack", JSON.stringify(techArray));
 
+    // 메타데이터 처리
     if (formData.metadata) {
       try {
         dataToSend.append(
@@ -87,8 +93,11 @@ const ProjectFormModal = ({ project, onClose }) => {
       }
     }
 
-    if (coverImage) {
-      dataToSend.append("image", coverImage);
+    // [중요] 필드명을 'images'로 변경 및 여러 파일 처리
+    if (projectImages.length > 0) {
+      projectImages.forEach((file) => {
+        dataToSend.append("images", file);
+      });
     }
 
     if (isEditing) {
@@ -290,19 +299,22 @@ const ProjectFormModal = ({ project, onClose }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="coverImage">SYSTEM_IMAGE</label>
+              <label htmlFor="images">SYSTEM_IMAGES</label>
               <div className="file-input-wrapper">
                 <input
                   type="file"
-                  id="coverImage"
-                  name="coverImage"
+                  id="images"
+                  name="images"
                   accept="image/*"
                   onChange={handleImageChange}
+                  multiple // [추가] 여러 장 선택 가능
                 />
               </div>
-              {isEditing && (
-                <p className="help-text">UPLOAD NEW FILE ONLY TO OVERWRITE</p>
-              )}
+              <p className="help-text">
+                {projectImages.length > 0
+                  ? `${projectImages.length} files selected`
+                  : "UPLOAD SYSTEM CAPTURES (MULTIPLE OK)"}
+              </p>
             </div>
 
             <button
