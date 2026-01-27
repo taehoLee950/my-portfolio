@@ -1,275 +1,223 @@
 @import "../../styles/constants/_colors.scss";
 
 .learning {
-  padding: 6rem 2rem;
-  background: $bg-dark;
+  padding: 8rem 0;
+  background: #020205;
   position: relative;
+  overflow: hidden;
 
-  &__container {
-    max-width: 1200px;
-    margin: 0 auto;
+  &__scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.06),
+        rgba(0, 255, 0, 0.02),
+        rgba(0, 0, 255, 0.06)
+      );
+    background-size:
+      100% 2px,
+      3px 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 0 2rem;
   }
 
   &__title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
+    font-size: 4rem;
+    font-family: "Orbitron", sans-serif;
+    color: $neon-cyan;
+    text-shadow:
+      0 0 10px $neon-cyan,
+      0 0 20px rgba($neon-cyan, 0.5);
     margin-bottom: 1rem;
-    color: $text-primary;
-    font-family: "Courier New", monospace;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
+    letter-spacing: 10px;
   }
 
   &__subtitle {
-    text-align: center;
-    color: $text-secondary;
-    margin-bottom: 4rem;
-    font-size: 1.125rem;
-    font-family: "Courier New", monospace;
-  }
-
-  /* Admin Actions - Added styles */
-  .admin-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    padding-right: 1.5rem; /* Align with projects section */
-
-    @media (max-width: 768px) {
-      justify-content: center;
-      padding-right: 0;
-    }
-  }
-
-  .admin-button {
-    padding: 0.75rem 1.5rem;
-    border: 1px solid;
-    border-radius: 4px;
-    background: transparent;
-    color: $neon-cyan;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    color: $neon-purple;
     font-family: "Courier New", monospace;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
-
-    &.add-button {
-      border-color: $neon-green;
-      color: $neon-green;
-      box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
-
-      &:hover {
-        background: $neon-green;
-        color: $bg-void;
-        box-shadow: $glow-green;
-      }
-    }
-
-    &:hover {
-      background: $neon-cyan;
-      color: $bg-void;
-      box-shadow: $glow-cyan;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
+    letter-spacing: 2px;
   }
 
-  .admin-skill-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    padding-right: 1.5rem;
-    padding-bottom: 1rem;
-    border-top: 1px solid rgba(0, 243, 255, 0.1);
-    background: rgba(0, 243, 255, 0.02);
+  &__slider-wrapper {
+    width: 100%;
+    padding: 2rem 0 5rem;
   }
 
-  .admin-button.edit-button {
-    border-color: $neon-yellow;
-    color: $neon-yellow;
-    box-shadow: 0 0 8px rgba(255, 255, 0, 0.3);
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
+  &__swiper {
+    padding: 3rem 0 !important;
+  }
 
-    &:hover {
-      background: $neon-yellow;
-      color: $bg-void;
-      box-shadow: $glow-yellow;
+  &__slide {
+    width: 450px !important; // 카드 너비 고정으로 공간 절약
+    height: auto;
+
+    @media (max-width: 768px) {
+      width: 85% !important;
     }
-  }
-
-  .admin-button.delete-button {
-    border-color: $neon-red;
-    color: $neon-red;
-    box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-
-    &:hover {
-      background: $neon-red;
-      color: $bg-void;
-      box-shadow: $glow-red;
-    }
-  }
-  /* End Admin Actions - Added styles */
-
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
   }
 
   &__card {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 0;
-    border: 2px solid $border-color;
+    background: rgba(10, 10, 15, 0.95);
+    border: 1px solid rgba($neon-cyan, 0.3);
+    border-radius: 0;
     position: relative;
-    transition: all 0.3s ease;
-    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 1);
 
     &--crt {
-      // CRT 모니터 효과
-      box-shadow:
-        inset 0 0 50px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(0, 243, 255, 0.3);
-      transform: perspective(1000px) rotateX(2deg);
-      border-radius: 4px;
-
-      // 미세한 떨림 효과
-      animation: crtFlicker 0.15s infinite;
-
-      &::before {
+      &::after {
         content: "";
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(
-          transparent 50%,
-          rgba(0, 243, 255, 0.03) 50%
+        background: radial-gradient(
+          circle,
+          transparent 60%,
+          rgba(0, 0, 0, 0.4) 100%
         );
-        background-size: 100% 4px;
         pointer-events: none;
-        z-index: 1;
       }
     }
 
+    &-header {
+      padding: 1.5rem;
+      background: rgba($neon-cyan, 0.05);
+      border-bottom: 1px solid rgba($neon-cyan, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .title-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #fff;
+      }
+
+      .icon-pulse {
+        animation: pulse 2s infinite;
+        color: $neon-cyan;
+      }
+    }
+
+    &-status {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border: 1px solid;
+      &.status-stable {
+        color: $neon-green;
+        border-color: $neon-green;
+      }
+      &.status-critical {
+        color: $neon-red;
+        border-color: $neon-red;
+        animation: blink 1s infinite;
+      }
+    }
+
+    &-body {
+      padding: 2rem 1.5rem;
+      min-height: 180px;
+    }
+
+    &-description {
+      font-family: "Courier New", monospace;
+      color: rgba($neon-cyan, 0.8);
+      font-size: 0.95rem;
+      line-height: 1.6;
+
+      .prompt {
+        color: $neon-pink;
+        margin-right: 8px;
+      }
+      .cursor {
+        animation: blink 0.8s infinite;
+        color: $neon-cyan;
+      }
+    }
+
+    &-footer {
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+
+      .notion-btn {
+        position: relative;
+        padding: 8px 16px;
+        background: transparent;
+        border: 1px solid $neon-purple;
+        color: $neon-purple;
+        text-decoration: none;
+        font-family: "Courier New", monospace;
+        font-size: 0.8rem;
+        transition: all 0.3s;
+        overflow: hidden;
+
+        &:hover {
+          background: $neon-purple;
+          color: #000;
+          box-shadow: 0 0 15px $neon-purple;
+        }
+      }
+    }
+  }
+}
+
+// Admin Buttons 커스텀
+.admin-skill-actions {
+  display: flex;
+  gap: 5px;
+  button {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    cursor: pointer;
     &:hover {
-      border-color: $neon-cyan;
-      box-shadow:
-        inset 0 0 50px rgba(0, 0, 0, 0.8),
-        $glow-cyan;
+      color: #fff;
+      border-color: #fff;
     }
   }
+}
 
-  @keyframes crtFlicker {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.98;
-    }
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
   }
-
-  &__card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid $border-color;
-    background: rgba(0, 243, 255, 0.05);
+  50% {
+    opacity: 0.5;
+    transform: scale(0.9);
   }
-
-  &__card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: $neon-cyan;
-    text-shadow: $glow-cyan;
-    font-family: "Courier New", monospace;
-    letter-spacing: 1px;
-    margin: 0;
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
+}
 
-  &__card-status {
-    font-family: "Courier New", monospace;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-
-    &--green {
-      color: $neon-green;
-      text-shadow: 0 0 10px $neon-green;
-      background: rgba(0, 255, 65, 0.1);
-      border: 1px solid $neon-green;
-    }
-
-    &--red {
-      color: $neon-red;
-      text-shadow: 0 0 10px $neon-red;
-      background: rgba(255, 0, 64, 0.1);
-      border: 1px solid $neon-red;
-    }
-  }
-
-  &__card-description {
-    color: $text-secondary;
-    line-height: 1.6;
-    margin: 1rem 1.5rem;
-    font-size: 0.9rem;
-  }
-
-  &__card-link {
-    margin: 0.5rem 1.5rem 1rem;
-    font-size: 0.9rem;
-    font-family: "Courier New", monospace;
-
-    a {
-      color: $neon-purple; /* A color distinct from cyan, yellow, green, red */
-      text-decoration: none;
-      text-shadow: $glow-purple;
-
-      &:hover {
-        text-decoration: underline;
-        color: lighten($neon-purple, 10%);
-      }
-    }
-  }
-
-  &__loading,
-  &__error,
-  &__empty {
-    padding: 4rem 2rem;
-    text-align: center;
-  }
-
-  &__loading-text,
-  &__error-text,
-  &__empty-text {
-    font-family: "Courier New", monospace;
-    font-size: 1.25rem;
-    color: $neon-cyan;
-    text-shadow: $glow-cyan;
-    letter-spacing: 2px;
-  }
-
-  &__error-text {
-    color: $neon-red;
-    text-shadow: 0 0 10px $neon-red;
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
 }

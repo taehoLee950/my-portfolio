@@ -1,35 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchSkillCases, deleteSkillCase } from '../../store/slices/skillCaseSlice.js';
-import SkillCaseFormModal from '../admin/SkillCaseFormModal'; // Import the new form modal
-import './LearningCases.scss';
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchSkillCases,
+  deleteSkillCase,
+} from "../../store/slices/skillCaseSlice.js";
+import SkillCaseFormModal from "../admin/SkillCaseFormModal";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCoverflow, Navigation, Pagination } from "swiper/modules";
+import { ExternalLink, Terminal, ShieldAlert, Cpu } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Swiper styles
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import "./LearningCases.scss";
 
 const LearningCases = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
-  const { skillCases, loading, error } = useSelector((state) => state.skillCases);
-  const { isAuthenticated } = useSelector((state) => state.auth); // Get auth status
-  const [typedTexts, setTypedTexts] = useState({}); // State for typing animation
-
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false); // For form modal visibility
-  const [skillCaseToEdit, setSkillCaseToEdit] = useState(null); // For passing skillCase data to form modal
+  const { skillCases, loading, error } = useSelector(
+    (state) => state.skillCases,
+  );
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const [typedTexts, setTypedTexts] = useState({});
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [skillCaseToEdit, setSkillCaseToEdit] = useState(null);
 
   useEffect(() => {
-    if (loading === 'idle') {
-      dispatch(fetchSkillCases());
-    }
+    if (loading === "idle") dispatch(fetchSkillCases());
   }, [dispatch, loading]);
 
   useEffect(() => {
     skillCases.forEach((caseItem) => {
-      // Re-introduce typing animation logic
-      if (!typedTexts[caseItem.id] || typedTexts[caseItem.id] !== (i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en)) {
-        const content = i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en;
+      const content =
+        i18n.language === "ko" ? caseItem.content_ko : caseItem.content_en;
+      if (!typedTexts[caseItem.id] || typedTexts[caseItem.id] !== content) {
         typeText(caseItem.id, content);
       }
     });
-  }, [skillCases, i18n.language, typedTexts]); // Added typedTexts to dependency array
+  }, [skillCases, i18n.language]);
 
   const typeText = (id, text) => {
     let currentIndex = 0;
@@ -43,129 +55,153 @@ const LearningCases = () => {
       } else {
         clearInterval(interval);
       }
-    }, 30);
+    }, 20);
   };
 
   const handleOpenAddModal = () => {
-    setSkillCaseToEdit(null); // No skillCase to edit, it's a new one
     setIsFormModalOpen(true);
+    setSkillCaseToEdit(null);
   };
-
-  const handleOpenEditModal = (skillCase) => {
-    setSkillCaseToEdit(skillCase); // Pass skillCase data for editing
+  const handleOpenEditModal = (item) => {
     setIsFormModalOpen(true);
+    setSkillCaseToEdit(item);
   };
-
   const handleCloseFormModal = () => {
     setIsFormModalOpen(false);
-    setSkillCaseToEdit(null); // Clear skillCase to edit
-    dispatch(fetchSkillCases()); // Refresh skill cases after form submission
+    dispatch(fetchSkillCases());
   };
 
   const handleDeleteSkillCase = (id) => {
-    if (window.confirm('Are you sure you want to delete this skill case?')) {
+    if (window.confirm("PROTOCOL: DELETE_CASE_CONFIRMATION?")) {
       dispatch(deleteSkillCase(id))
         .unwrap()
-        .then(() => alert('Skill Case deleted successfully!'))
-        .catch((err) => alert(`Failed to delete skill case: ${err}`));
+        .catch((err) => alert(`SYSTEM_ERROR: ${err}`));
     }
   };
 
-
-  // 로딩 중 UI
-  if (loading === 'pending') {
-    return (
-      <section id="learning" className="learning">
-        <div className="learning__container">
-          <h2 className="learning__title neon-text">{t('learning.title')}</h2>
-          <div className="learning__loading">
-            <span className="learning__loading-text">LOADING SKILL CASES...</span>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // 에러 발생 UI
-  if (error) {
-    return (
-      <section id="learning" className="learning">
-        <div className="learning__container">
-          <h2 className="learning__title neon-text">{t('learning.title')}</h2>
-          <div className="learning__error">
-            <span className="learning__error-text">ERROR: {error}</span>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  if (loading === "pending")
+    return <div className="learning__loading">ACCESSING_DATABASE...</div>;
 
   return (
     <section id="learning" className="learning">
+      <div className="learning__scanline" />
       <div className="learning__container">
-        <h2 className="learning__title neon-text">{t('learning.title')}</h2>
-        {isAuthenticated && (
-          <div className="admin-actions">
-            <button onClick={handleOpenAddModal} className="admin-button add-button">
-              Add New Skill Case
-            </button>
-          </div>
-        )}
-        <p className="learning__subtitle">{t('learning.subtitle')}</p>
-        <div className="learning__grid">
-          {skillCases && skillCases.length > 0 ? (
-            skillCases.map((caseItem) => {
-              const currentContent = i18n.language === 'ko' ? caseItem.content_ko : caseItem.content_en;
-              const status = caseItem.metadata?.status || 'STABLE'; // Assuming metadata is still there
-              const statusColor = status === 'CRITICAL' ? 'red' : 'green';
+        <header className="learning__header">
+          <motion.h2
+            initial={{ x: -50, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            className="learning__title neon-text"
+          >
+            {t("learning.title")}
+          </motion.h2>
+          <p className="learning__subtitle">
+            <Terminal size={14} inline /> {t("learning.subtitle")}
+          </p>
 
-              return (
-            <div key={caseItem.id} className="learning__card learning__card--crt">
-              <div className="learning__card-header">
-                <h3 className="learning__card-title">{caseItem.skill_name}</h3>
-                <div
-                  className={`learning__card-status learning__card-status--${statusColor}`}
-                >
-                  STATUS: {status}
-                </div>
-              </div>
-              <p className="learning__card-description">
-                {typedTexts[caseItem.id] || ''} {/* Display typing animation content */}
-              </p>
-              {caseItem.notion_link && ( // Use notion_link
-                <div className="learning__card-link">
-                  <a href={caseItem.notion_link} target="_blank" rel="noopener noreferrer">
-                    {t('learning.viewNotion')}
-                  </a>
-                </div>
-              )}
-              {caseItem.reference_link && (
-                <div className="learning__card-link">
-                  <a href={caseItem.reference_link} target="_blank" rel="noopener noreferrer">
-                    {t('learning.viewReference')}
-                  </a>
-                </div>
-              )}
-
-              {isAuthenticated && (
-                <div className="admin-skill-actions">
-                  <button onClick={(e) => { e.stopPropagation(); handleOpenEditModal(caseItem); }} className="admin-button edit-button">Edit</button>
-                  <button onClick={(e) => { e.stopPropagation(); handleDeleteSkillCase(caseItem.id); }} className="admin-button delete-button">Delete</button>
-                </div>
-              )}
-
-            </div>
-              );
-            })
-          ) : (
-            <div className="learning__empty">
-              <span className="learning__empty-text">NO SKILL CASES FOUND</span>
+          {isAuthenticated && (
+            <div className="admin-actions">
+              <button
+                onClick={handleOpenAddModal}
+                className="admin-button add-button"
+              >
+                + NEW_DATA_ENTRY
+              </button>
             </div>
           )}
+        </header>
+
+        <div className="learning__slider-wrapper">
+          <Swiper
+            effect={"coverflow"}
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView={"auto"}
+            coverflowEffect={{
+              rotate: 30,
+              stretch: 0,
+              depth: 100,
+              modifier: 1,
+              slideShadows: false,
+            }}
+            pagination={{ clickable: true }}
+            navigation={true}
+            modules={[EffectCoverflow, Pagination, Navigation]}
+            className="learning__swiper"
+          >
+            {skillCases && skillCases.length > 0 ? (
+              skillCases.map((caseItem) => {
+                const status = caseItem.metadata?.status || "STABLE";
+                return (
+                  <SwiperSlide key={caseItem.id} className="learning__slide">
+                    <div className="learning__card learning__card--crt">
+                      <div className="learning__card-header">
+                        <div className="title-group">
+                          <Cpu size={16} className="icon-pulse" />
+                          <h3 className="learning__card-title">
+                            {caseItem.skill_name}
+                          </h3>
+                        </div>
+                        <div
+                          className={`learning__card-status status-${status.toLowerCase()}`}
+                        >
+                          {status}
+                        </div>
+                      </div>
+
+                      <div className="learning__card-body">
+                        <p className="learning__card-description">
+                          <span className="prompt">{">"}</span>{" "}
+                          {typedTexts[caseItem.id] || ""}
+                          <span className="cursor">_</span>
+                        </p>
+                      </div>
+
+                      <div className="learning__card-footer">
+                        {caseItem.notion_link && (
+                          <a
+                            href={caseItem.notion_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="notion-btn"
+                          >
+                            <span className="btn-glitch"></span>
+                            <ExternalLink size={14} />{" "}
+                            {t("learning.viewNotion")}
+                          </a>
+                        )}
+
+                        {isAuthenticated && (
+                          <div className="admin-skill-actions">
+                            <button
+                              onClick={() => handleOpenEditModal(caseItem)}
+                              className="edit-btn"
+                            >
+                              FIX
+                            </button>
+                            <button
+                              onClick={() => handleDeleteSkillCase(caseItem.id)}
+                              className="del-btn"
+                            >
+                              DEL
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                );
+              })
+            ) : (
+              <div className="learning__empty">DATABASE_EMPTY</div>
+            )}
+          </Swiper>
         </div>
       </div>
       {isFormModalOpen && (
-        <SkillCaseFormModal skillCase={skillCaseToEdit} onClose={handleCloseFormModal} />
+        <SkillCaseFormModal
+          skillCase={skillCaseToEdit}
+          onClose={handleCloseFormModal}
+        />
       )}
     </section>
   );
