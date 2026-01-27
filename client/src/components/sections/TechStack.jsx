@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import "./TechStack.scss";
 
 const TechStack = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("all");
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const techStackData = t("techStack", { returnObjects: true });
   const categories = useMemo(
@@ -16,39 +18,53 @@ const TechStack = () => {
     [techStackData],
   );
 
+  // 대제목 및 요약글 스크롤 애니메이션
+  const headerVariants = {
+    hidden: { opacity: 0, y: 50, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
   return (
     <section id="tech-stack" className="tech-stack scanline">
       <div className="tech-stack__container">
-        <motion.h2
-          className="tech-stack__title neon-text"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-        >
-          {techStackData.title}
-        </motion.h2>
-        <p className="tech-stack__summary">{techStackData.summary}</p>
+        <header className="tech-stack__header">
+          {/* 스크롤 감지 애니메이션 적용 */}
+          <motion.div
+            className="title-container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, margin: "-100px" }}
+            variants={headerVariants}
+          >
+            <h2
+              className="tech-stack__title neon-text"
+              data-text={techStackData.title}
+            >
+              {techStackData.title}
+            </h2>
+            <p className="tech-stack__summary">{techStackData.summary}</p>
 
-        {/* 필터 탭 추가 (정신없는 느낌을 줄여줍니다) */}
-        <div
-          className="tech-stack__tabs"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "15px",
-            marginBottom: "40px",
-            flexWrap: "wrap",
-          }}
-        >
+            {/* 관리자 버튼: 헤더 내부 중앙 배치 */}
+            {isAuthenticated && (
+              <div className="admin-actions">
+                <button className="admin-button add-button">
+                  [+] NEW_DATA_ENTRY
+                </button>
+              </div>
+            )}
+          </motion.div>
+        </header>
+
+        {/* 탭 메뉴 */}
+        <div className="tech-stack__tabs">
           <button
             onClick={() => setActiveTab("all")}
-            style={{
-              background: "transparent",
-              border: `1px solid ${activeTab === "all" ? "#00f3ff" : "#333"}`,
-              color: activeTab === "all" ? "#00f3ff" : "#666",
-              padding: "5px 15px",
-              cursor: "pointer",
-              fontFamily: "Courier New",
-            }}
+            className={activeTab === "all" ? "active" : ""}
           >
             [ ALL_UNITS ]
           </button>
@@ -56,20 +72,14 @@ const TechStack = () => {
             <button
               key={cat}
               onClick={() => setActiveTab(cat)}
-              style={{
-                background: "transparent",
-                border: `1px solid ${activeTab === cat ? "#00f3ff" : "#333"}`,
-                color: activeTab === cat ? "#00f3ff" : "#666",
-                padding: "5px 15px",
-                cursor: "pointer",
-                fontFamily: "Courier New",
-              }}
+              className={activeTab === cat ? "active" : ""}
             >
               {cat.toUpperCase()}
             </button>
           ))}
         </div>
 
+        {/* 기술 카드 그리드 */}
         <motion.div layout className="tech-stack__grid">
           <AnimatePresence mode="popLayout">
             {categories
@@ -84,9 +94,10 @@ const TechStack = () => {
                   <motion.div
                     key={categoryKey}
                     layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.4 }}
                     className="tech-stack__card"
                   >
                     <div className="tech-stack__card-corner tech-stack__card-corner--top-right"></div>

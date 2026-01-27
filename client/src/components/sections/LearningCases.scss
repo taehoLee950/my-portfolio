@@ -1,222 +1,356 @@
 @import "../../styles/constants/_colors.scss";
 
 .learning {
-  padding: 8rem 0;
-  background: #020205;
+  padding: 10rem 0;
+  background: #010103;
   position: relative;
   overflow: hidden;
 
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba($neon-cyan, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($neon-cyan, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+
   &__scanline {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-      linear-gradient(
-        to bottom,
-        rgba(18, 16, 16, 0) 50%,
-        rgba(0, 0, 0, 0.25) 50%
-      ),
-      linear-gradient(
-        90deg,
-        rgba(255, 0, 0, 0.06),
-        rgba(0, 255, 0, 0.02),
-        rgba(0, 0, 255, 0.06)
-      );
-    background-size:
-      100% 2px,
-      3px 100%;
-    pointer-events: none;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.2) 50%
+    );
+    background-size: 100% 4px;
     z-index: 10;
+    pointer-events: none;
+    opacity: 0.3;
   }
 
   &__header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 5rem;
     padding: 0 2rem;
+    z-index: 5;
   }
 
   &__title {
-    font-size: 4rem;
+    font-size: 4.5rem;
     font-family: "Orbitron", sans-serif;
-    color: $neon-cyan;
-    text-shadow:
-      0 0 10px $neon-cyan,
-      0 0 20px rgba($neon-cyan, 0.5);
-    margin-bottom: 1rem;
-    letter-spacing: 10px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 15px;
+    position: relative;
+    display: inline-block;
+    text-shadow: 0 0 20px rgba($neon-cyan, 0.5);
+
+    &::before,
+    &::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.8;
+      display: none;
+    }
+
+    &:hover {
+      &::before {
+        display: block;
+        color: $neon-pink;
+        animation: glitch-anim 0.3s infinite linear alternate-reverse;
+        z-index: -1;
+        transform: translate(-3px, -2px);
+      }
+      &::after {
+        display: block;
+        color: $neon-cyan;
+        animation: glitch-anim 0.3s infinite linear alternate;
+        z-index: -2;
+        transform: translate(3px, 2px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      font-size: 2.5rem;
+      letter-spacing: 5px;
+    }
   }
 
   &__subtitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: $neon-purple;
     font-family: "Courier New", monospace;
+    font-size: 1.1rem;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    opacity: 0.8;
+  }
+
+  .admin-actions {
+    margin-top: 2.5rem;
+    .add-btn-main {
+      background: transparent;
+      border: none;
+      color: $neon-cyan;
+      font-family: "Orbitron", sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 10px 20px;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0 auto;
+
+      .btn-bracket {
+        font-size: 1.5rem;
+        transition: transform 0.3s;
+      }
+      &:hover {
+        color: #fff;
+        text-shadow: 0 0 10px $neon-cyan;
+        .btn-bracket {
+          transform: scaleX(1.5);
+          color: $neon-cyan;
+        }
+      }
+    }
   }
 
   &__slider-wrapper {
     width: 100%;
-    padding: 2rem 0 5rem;
+    padding: 2rem 0;
   }
-
   &__swiper {
-    padding: 3rem 0 !important;
+    padding: 4rem 0 !important;
   }
 
   &__slide {
-    width: 450px !important; // 카드 너비 고정으로 공간 절약
-    height: auto;
+    width: 480px !important;
+    filter: grayscale(0.5) brightness(0.7);
+    transition: all 0.5s;
 
+    &.swiper-slide-active {
+      filter: grayscale(0) brightness(1);
+      transform: scale(1.05);
+    }
     @media (max-width: 768px) {
-      width: 85% !important;
+      width: 90% !important;
     }
   }
 
   &__card {
-    background: rgba(10, 10, 15, 0.95);
-    border: 1px solid rgba($neon-cyan, 0.3);
-    border-radius: 0;
+    background: rgba(10, 15, 25, 0.95);
+    border: 1px solid rgba($neon-cyan, 0.2);
     position: relative;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
+    transition: all 0.3s ease;
 
-    &--crt {
-      &::after {
+    // 지지직 효과 (글리치 모드 활성 시)
+    &.glitch-mode {
+      animation: card-glitch 0.4s steps(2) infinite;
+      border-color: $neon-pink !important;
+      &::before {
         content: "";
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(
-          circle,
-          transparent 60%,
-          rgba(0, 0, 0, 0.4) 100%
-        );
+        inset: 0;
+        background: rgba($neon-cyan, 0.1);
+        z-index: 5;
         pointer-events: none;
       }
     }
 
+    &--crt::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle,
+        transparent 60%,
+        rgba(0, 0, 0, 0.5) 100%
+      );
+      pointer-events: none;
+    }
+
     &-header {
-      padding: 1.5rem;
+      padding: 1.5rem 2rem;
       background: rgba($neon-cyan, 0.05);
-      border-bottom: 1px solid rgba($neon-cyan, 0.2);
+      border-bottom: 1px solid rgba($neon-cyan, 0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
-
       .title-group {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         color: #fff;
+        font-family: "Orbitron", sans-serif;
       }
-
       .icon-pulse {
-        animation: pulse 2s infinite;
         color: $neon-cyan;
+        animation: pulse 2s infinite;
       }
     }
 
     &-status {
-      font-size: 0.7rem;
-      padding: 2px 8px;
+      font-size: 0.75rem;
+      padding: 3px 10px;
       border: 1px solid;
+      font-family: "Courier New", monospace;
+      font-weight: bold;
       &.status-stable {
         color: $neon-green;
-        border-color: $neon-green;
+        border-color: rgba($neon-green, 0.5);
+        background: rgba($neon-green, 0.05);
       }
       &.status-critical {
         color: $neon-red;
         border-color: $neon-red;
-        animation: blink 1s infinite;
+        animation: blink 0.8s infinite;
+        background: rgba($neon-red, 0.1);
       }
     }
 
     &-body {
-      padding: 2rem 1.5rem;
-      min-height: 180px;
+      padding: 2.5rem 2rem;
+      min-height: 220px;
     }
-
     &-description {
       font-family: "Courier New", monospace;
-      color: rgba($neon-cyan, 0.8);
-      font-size: 0.95rem;
-      line-height: 1.6;
-
+      color: rgba($neon-cyan, 0.9);
+      font-size: 1rem;
+      line-height: 1.7;
       .prompt {
         color: $neon-pink;
+        font-weight: bold;
         margin-right: 8px;
+      }
+      .text-content {
+        text-shadow: 0 0 5px rgba($neon-cyan, 0.3);
       }
       .cursor {
         animation: blink 0.8s infinite;
         color: $neon-cyan;
+        margin-left: 4px;
       }
     }
 
     &-footer {
-      padding: 1rem 1.5rem;
+      padding: 1.5rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(0, 0, 0, 0.5);
-
+      background: rgba(0, 0, 0, 0.4);
       .notion-btn {
-        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         padding: 8px 16px;
         background: transparent;
-        border: 1px solid $neon-purple;
+        border: 1px solid rgba($neon-purple, 0.5);
         color: $neon-purple;
         text-decoration: none;
-        font-family: "Courier New", monospace;
-        font-size: 0.8rem;
+        font-family: "Orbitron", sans-serif;
+        font-size: 0.75rem;
         transition: all 0.3s;
-        overflow: hidden;
-
         &:hover {
-          background: $neon-purple;
-          color: #000;
-          box-shadow: 0 0 15px $neon-purple;
+          background: rgba($neon-purple, 0.1);
+          border-color: $neon-purple;
+          box-shadow: 0 0 15px rgba($neon-purple, 0.3);
+          color: #fff;
         }
       }
     }
   }
 }
 
-// Admin Buttons 커스텀
 .admin-skill-actions {
   display: flex;
-  gap: 5px;
+  gap: 8px;
   button {
     background: transparent;
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.7rem;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .admin-edit-btn {
     border: 1px solid #444;
     color: #888;
-    font-size: 0.7rem;
-    padding: 3px 8px;
-    cursor: pointer;
     &:hover {
-      color: #fff;
-      border-color: #fff;
+      border-color: $neon-yellow;
+      color: $neon-yellow;
+    }
+  }
+  .admin-del-btn {
+    border: 1px solid #444;
+    color: #888;
+    &:hover {
+      border-color: $neon-red;
+      color: $neon-red;
     }
   }
 }
 
-@keyframes pulse {
+@keyframes card-glitch {
   0% {
-    opacity: 1;
-    transform: scale(1);
+    transform: translate(0);
+    clip-path: inset(0 0 0 0);
   }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.9);
+  20% {
+    transform: translate(-4px, 2px);
+    clip-path: inset(20% 0 50% 0);
+  }
+  40% {
+    transform: translate(4px, -2px);
+    clip-path: inset(60% 0 10% 0);
+  }
+  60% {
+    transform: translate(-2px, 4px);
+    clip-path: inset(10% 0 70% 0);
+  }
+  80% {
+    transform: translate(2px, -4px);
+    clip-path: inset(40% 0 30% 0);
   }
   100% {
-    opacity: 1;
-    transform: scale(1);
+    transform: translate(0);
   }
 }
 
+@keyframes glitch-anim {
+  0% {
+    clip-path: inset(20% 0 80% 0);
+  }
+  100% {
+    clip-path: inset(0% 0 0% 0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
 @keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
   50% {
     opacity: 0;
   }

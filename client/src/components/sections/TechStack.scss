@@ -1,24 +1,22 @@
 @import "../../styles/constants/_colors.scss";
 
 .tech-stack {
-  padding: 8rem 2rem;
-  background: $bg-dark;
+  padding: 12rem 2rem;
+  background: #00050a;
   position: relative;
   overflow: hidden;
 
-  // 사이버펑크 그리드 배경 추가
+  // 사이버펑크 그리드 배경
   &::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-image:
-      linear-gradient(rgba(0, 243, 255, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 243, 255, 0.02) 1px, transparent 1px);
-    background-size: 30px 30px;
+      linear-gradient(rgba($neon-cyan, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($neon-cyan, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
     pointer-events: none;
+    mask-image: radial-gradient(circle, black, transparent 90%);
   }
 
   &__container {
@@ -28,156 +26,262 @@
     z-index: 1;
   }
 
-  &__title {
-    font-size: 3rem;
-    font-weight: 700;
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    margin-bottom: 1.5rem;
-    color: $neon-cyan;
-    font-family: "Courier New", monospace;
-    letter-spacing: 5px;
+    margin-bottom: 6rem;
+
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    // 관리자 버튼 스타일 (네온 스타일로 수정)
+    .admin-actions {
+      margin-top: 3rem;
+      .admin-button {
+        background: transparent;
+        border: 1px solid $neon-cyan;
+        color: $neon-cyan;
+        padding: 12px 28px;
+        font-family: "Orbitron", sans-serif;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+
+        &:hover {
+          background: rgba($neon-cyan, 0.15);
+          box-shadow: 0 0 20px rgba($neon-cyan, 0.4);
+          text-shadow: 0 0 8px $neon-cyan;
+          transform: translateY(-3px);
+        }
+      }
+    }
+  }
+
+  &__title {
+    font-size: 5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: #fff;
+    font-family: "Orbitron", sans-serif; // 디지털 폰트로 고정
+    letter-spacing: 15px;
     text-transform: uppercase;
-    text-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+    text-shadow: 0 0 25px rgba($neon-cyan, 0.6);
+    position: relative;
+
+    &::before,
+    &::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.6;
+      display: none;
+    }
+
+    &:hover {
+      &::before {
+        display: block;
+        color: $neon-pink;
+        animation: glitch-anim 0.3s infinite linear alternate-reverse;
+        z-index: -1;
+        left: 4px;
+      }
+      &::after {
+        display: block;
+        color: $neon-cyan;
+        animation: glitch-anim 0.3s infinite linear alternate;
+        z-index: -2;
+        left: -4px;
+      }
+    }
 
     @media (max-width: 768px) {
-      font-size: 2rem;
+      font-size: 3rem;
+      letter-spacing: 8px;
     }
   }
 
   &__summary {
-    text-align: center;
     color: $text-secondary;
-    margin-bottom: 4rem;
-    font-size: 1.125rem;
+    font-size: 1.15rem;
     font-family: "Courier New", monospace;
-    line-height: 1.6;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    border-left: 2px solid $neon-pink;
-    padding-left: 20px;
-  }
-
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2.5rem;
-  }
-
-  &__card {
-    background: rgba(0, 5, 10, 0.8);
-    padding: 2.5rem;
-    border: 1px solid rgba(0, 243, 255, 0.2);
+    line-height: 1.8;
+    max-width: 750px;
+    padding: 15px 25px;
+    border-left: 4px solid $neon-pink;
+    background: rgba($neon-pink, 0.05);
     position: relative;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-
-    &:hover {
-      border-color: $neon-cyan;
-      box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
-      transform: translateY(-10px) scale(1.02);
-      background: rgba(0, 243, 255, 0.03);
-    }
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 0 20px 20px 0;
-      border-color: transparent $neon-cyan transparent transparent;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
 
     &::after {
       content: "";
       position: absolute;
       bottom: 0;
       left: 0;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 20px 0 0 20px;
-      border-color: transparent transparent transparent $neon-pink;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    &:hover::before,
-    &:hover::after {
-      opacity: 1;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, $neon-pink, transparent);
     }
   }
 
-  &__card-corner {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 1px solid rgba($neon-cyan, 0.5);
-    z-index: 1;
+  &__tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 5rem;
+    flex-wrap: wrap;
 
-    &--top-right {
-      top: 5px;
-      right: 5px;
-      border-left: none;
-      border-bottom: none;
+    button {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #222;
+      color: #666;
+      padding: 10px 24px;
+      cursor: pointer;
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.85rem;
+      transition: all 0.4s;
+      clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+
+      &:hover,
+      &.active {
+        border-color: $neon-cyan;
+        color: $neon-cyan;
+        background: rgba($neon-cyan, 0.15);
+        box-shadow: 0 0 20px rgba($neon-cyan, 0.2);
+        transform: translateY(-2px);
+      }
     }
+  }
 
-    &--bottom-left {
-      bottom: 5px;
-      left: 5px;
-      border-right: none;
-      border-top: none;
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 3rem;
+  }
+
+  &__card {
+    background: rgba(2, 10, 20, 0.95);
+    padding: 3rem;
+    border: 1px solid rgba($neon-cyan, 0.15);
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 92% 100%, 0 100%);
+
+    &:hover {
+      border-color: $neon-pink;
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba($neon-pink, 0.1);
+      transform: translateY(-12px);
+      background: rgba($neon-pink, 0.02);
     }
   }
 
   &__card-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 1.2rem;
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
     color: #fff;
-    font-family: "Courier New", monospace;
-    letter-spacing: 1px;
+    font-family: "Orbitron", sans-serif;
     border-bottom: 1px solid rgba($neon-cyan, 0.1);
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+    letter-spacing: 2px;
   }
 
   &__card-description {
-    color: rgba($text-secondary, 0.8);
-    line-height: 1.7;
-    margin-bottom: 2rem;
-    font-size: 0.95rem;
+    color: rgba($text-secondary, 0.9);
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
     flex-grow: 1;
   }
 
   &__skills-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: auto;
+    gap: 0.8rem;
   }
 
   &__skill-tag {
-    background: rgba(255, 255, 0, 0.02);
+    background: rgba($neon-yellow, 0.03);
     color: $neon-yellow;
-    padding: 0.3rem 0.8rem;
-    border: 1px solid rgba($neon-yellow, 0.3);
-    font-size: 0.75rem;
-    font-family: "Courier New", monospace;
-    text-transform: uppercase;
+    padding: 5px 14px;
+    border: 1px solid rgba($neon-yellow, 0.2);
+    font-size: 0.8rem;
+    font-family: "Orbitron", sans-serif;
     transition: all 0.3s;
 
     &:hover {
       background: $neon-yellow;
       color: #000;
-      box-shadow: 0 0 10px $neon-yellow;
+      box-shadow: 0 0 15px $neon-yellow;
       transform: skewX(-10deg);
     }
+  }
+
+  // 카드 모서리 장식
+  &__card-corner {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border: 1px solid rgba($neon-cyan, 0.4);
+    pointer-events: none;
+
+    &--top-right {
+      top: 10px;
+      right: 10px;
+      border-left: none;
+      border-bottom: none;
+    }
+    &--bottom-left {
+      bottom: 10px;
+      left: 10px;
+      border-right: none;
+      border-top: none;
+    }
+  }
+}
+
+// 애니메이션 키프레임
+@keyframes glitch-anim {
+  0% {
+    clip-path: inset(80% 0 1% 0);
+    transform: translate(-4px, -2px);
+  }
+  20% {
+    clip-path: inset(20% 0 50% 0);
+    transform: translate(4px, 2px);
+  }
+  40% {
+    clip-path: inset(50% 0 30% 0);
+    transform: translate(-4px, 4px);
+  }
+  60% {
+    clip-path: inset(10% 0 70% 0);
+    transform: translate(4px, -2px);
+  }
+  100% {
+    clip-path: inset(0% 0 0% 0);
+    transform: translate(0);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
   }
 }
