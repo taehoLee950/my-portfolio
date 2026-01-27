@@ -8,7 +8,7 @@ import {
 } from "../../store/slices/projectSlice.js";
 import ProjectModal from "../common/ProjectModal";
 import ProjectFormModal from "../admin/ProjectFormModal";
-import { Terminal, Database, Activity, Box } from "lucide-react";
+import { Database, Box } from "lucide-react";
 import "./Projects.scss";
 
 const Projects = () => {
@@ -42,6 +42,26 @@ const Projects = () => {
     setProjectToEdit(null);
   };
 
+  // 대제목 스크롤 애니메이션 정의
+  const titleVariants = {
+    hidden: {
+      opacity: 0,
+      y: 40,
+      skewX: -10,
+      filter: "blur(10px)",
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      skewX: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.8,
+        ease: [0.17, 0.67, 0.83, 0.67], // 커스텀 베지어 곡선
+      },
+    },
+  };
+
   return (
     <section id="projects" className="projects">
       {/* 배경 장식 레이어 */}
@@ -54,8 +74,10 @@ const Projects = () => {
         <header className="projects__header">
           <motion.div
             className="title-container"
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, margin: "-100px" }}
+            variants={titleVariants}
           >
             <h2
               className="projects__title neon-text"
@@ -70,12 +92,14 @@ const Projects = () => {
           </motion.div>
 
           {isAuthenticated && (
-            <button
-              onClick={() => setIsFormModalOpen(true)}
-              className="admin-button add-button"
-            >
-              [+] ADD_DATA_NODE
-            </button>
+            <div className="admin-actions-top">
+              <button
+                onClick={() => setIsFormModalOpen(true)}
+                className="admin-button add-button"
+              >
+                [+] ADD_DATA_NODE
+              </button>
+            </div>
           )}
         </header>
 
@@ -94,7 +118,7 @@ const Projects = () => {
                   whileInView={{ opacity: 1, scale: 1, y: 0 }}
                   whileHover={{ scale: 1.05, zIndex: 10 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
                 >
                   <div className="node-connector"></div>
 
@@ -102,7 +126,6 @@ const Projects = () => {
                     className="node-content"
                     onClick={() => setSelectedProject(project)}
                   >
-                    {/* 데이터 칩 느낌의 헤더 */}
                     <div className="node-header">
                       <Box size={14} />
                       <span className="node-id">
