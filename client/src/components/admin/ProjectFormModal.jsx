@@ -232,7 +232,9 @@ const ProjectFormModal = ({ project, onClose }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="tech_stack">TECH_STACK</label>
+              <label htmlFor="tech_stack">
+                TECH_STACK <span className="required">*</span>
+              </label>
               <input
                 type="text"
                 id="tech_stack"
@@ -240,12 +242,15 @@ const ProjectFormModal = ({ project, onClose }) => {
                 value={formData.tech_stack}
                 onChange={handleChange}
                 placeholder="React, Node.js, MySQL, Docker"
+                required
               />
             </div>
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="github_url">GITHUB_URL</label>
+                <label htmlFor="github_url">
+                  GITHUB_URL <span className="required">*</span>
+                </label>
                 <input
                   type="url"
                   id="github_url"
@@ -253,10 +258,13 @@ const ProjectFormModal = ({ project, onClose }) => {
                   value={formData.github_url}
                   onChange={handleChange}
                   placeholder="https://github.com/..."
+                  required
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="reference_link">REF_LINK</label>
+                <label htmlFor="reference_link">
+                  REF_LINK <span className="required">*</span>
+                </label>
                 <input
                   type="url"
                   id="reference_link"
@@ -264,6 +272,7 @@ const ProjectFormModal = ({ project, onClose }) => {
                   value={formData.reference_link}
                   onChange={handleChange}
                   placeholder="https://demo.com/..."
+                  required
                 />
               </div>
             </div>

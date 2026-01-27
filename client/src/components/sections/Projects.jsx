@@ -18,7 +18,6 @@ const projectImages = import.meta.glob(
 const Projects = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
-
   const { projects, loading } = useSelector((state) => state.projects);
   const { isAuthenticated } = useSelector((state) => state.auth);
 
@@ -37,17 +36,17 @@ const Projects = () => {
     setProjectToEdit(null);
   };
 
-  // 임~ 코멘트: tech_stack이 문자열로 올 경우를 대비해 배열로 변환하는 헬퍼 함수
   const safeParseTechStack = (techStack) => {
     if (Array.isArray(techStack)) return techStack;
     if (typeof techStack === "string") {
       try {
-        // JSON 문자열 형태인 경우 파싱
         const parsed = JSON.parse(techStack);
         return Array.isArray(parsed) ? parsed : [techStack];
       } catch (e) {
-        // 일반 쉼표 구분 문자열인 경우 분리
-        return techStack.split(",").map((item) => item.trim());
+        return techStack
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
       }
     }
     return [];
@@ -84,13 +83,12 @@ const Projects = () => {
               const fileName = project.thumbnail || `icemachine${imageNum}.png`;
               const imageSrc =
                 projectImages[`../../assets/images/${fileName}`]?.default;
-
-              // 임~ 코멘트: 렌더링 직전에 안전하게 배열로 변환
               const techStacks = safeParseTechStack(project.tech_stack);
 
               return (
                 <motion.div
-                  key={project.id}
+                  // 임~ 코멘트: 중복 키 방지를 위해 ID와 인덱스 조합
+                  key={`proj-card-${project.id || index}`}
                   className="projects__card"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -113,21 +111,18 @@ const Projects = () => {
 
                   <div className="projects__card-content">
                     <div className="projects__card-serial">
-                      PROJ_{String(project.id).padStart(4, "0")} / v.
-                      {project.version}
+                      PROJ_{String(project.id || index).padStart(4, "0")} / v.
+                      {project.version || 0}
                     </div>
                     <h3 className="projects__card-title">{currentTitle}</h3>
                     <p className="projects__card-description">
-                      {i18n.language === "ko"
-                        ? project.role_summary
-                        : project.role_summary}
+                      {project.role_summary}
                     </p>
 
                     <div className="projects__card-tags">
-                      {/* 임~ 코멘트: 안전하게 변환된 techStacks 배열 사용 */}
                       {techStacks.map((tech, idx) => (
                         <span
-                          key={`${project.id}-${idx}`}
+                          key={`tag-${project.id}-${idx}`}
                           className="projects__card-tag"
                         >
                           #{tech}

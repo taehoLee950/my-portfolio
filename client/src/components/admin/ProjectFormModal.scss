@@ -61,7 +61,6 @@
     color: $neon-pink;
     font-family: "Courier New", monospace;
     transition: all 0.3s ease;
-
     &:hover {
       text-shadow: 0 0 10px $neon-pink;
       transform: scale(1.1);
@@ -79,7 +78,6 @@
     color: $neon-yellow;
     text-transform: uppercase;
     letter-spacing: 1px;
-
     .required {
       color: $neon-red;
       margin-left: 4px;
@@ -90,7 +88,7 @@
   input[type="url"],
   textarea {
     width: 100%;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.03); // 기본 투명도 유지
     border: 1px solid rgba(0, 243, 255, 0.3);
     padding: 12px;
     color: #fff;
@@ -99,16 +97,23 @@
     transition: all 0.3s ease;
     box-sizing: border-box;
 
+    // 핵심: 타이핑하는 글자가 빛나도록 설정
+    &:not(:placeholder-shown),
+    &:focus {
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    }
+
     &:focus {
       outline: none;
       border-color: $neon-cyan;
-      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); // 포커스 시 테두리 Glow
+      background: rgba(255, 255, 255, 0.07);
     }
 
     &::placeholder {
       color: rgba(255, 255, 255, 0.2);
       font-size: 0.85rem;
+      text-shadow: none; // 플레이스홀더는 빛나지 않게
     }
   }
 
@@ -122,7 +127,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
@@ -158,7 +162,6 @@
     color: #000;
     box-shadow: 0 0 20px $neon-cyan;
   }
-
   &:disabled {
     border-color: #444;
     color: #444;
@@ -170,7 +173,6 @@
   border: 1px dashed rgba(0, 243, 255, 0.3);
   padding: 10px;
   background: rgba(0, 243, 255, 0.02);
-
   input[type="file"] {
     color: $text-secondary;
     font-size: 0.8rem;

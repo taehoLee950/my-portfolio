@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import Portal from "./Portal";
@@ -12,41 +12,58 @@ const assetImages = import.meta.glob(
 const ProjectModal = ({ project, onClose }) => {
   const { i18n } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
 
-  // 데이터 가드: project.data 형태든 일반 객체 형태든 대응
-  const d = useMemo(() => {
-    if (!project) return null;
-    // Prioritize project.data if it exists and is an object, otherwise use project itself.
-    // This directly addresses the "Data Depth Mismatch" by ensuring the correct data path.
-    return (project.data && typeof project.data === 'object') ? project.data : project;
+  useEffect(() => {
+    setCurrentImageIndex(0);
   }, [project]);
 
-  // 이미지 리스트 생성
+  const d = useMemo(() => {
+    if (!project) return null;
+    return project.data && typeof project.data === "object"
+      ? project.data
+      : project;
+  }, [project]);
+
+  const techStacks = useMemo(() => {
+    if (!d?.tech_stack) return [];
+    if (Array.isArray(d.tech_stack)) return d.tech_stack;
+    if (typeof d.tech_stack === "string") {
+      try {
+        const parsed = JSON.parse(d.tech_stack);
+        return Array.isArray(parsed) ? parsed : [d.tech_stack];
+      } catch (e) {
+        return d.tech_stack
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
+      }
+    }
+    return [];
+  }, [d]);
+
   const displayImages = useMemo(() => {
     if (!d) return [];
     const images = [];
-
-    // 1. 로컬 이미지 (ID 1, 2 대응)
+    // 한국어 데이터 적용
     if (d.id === 1) {
       for (let i = 1; i <= 5; i++) images.push(`daeguWeather${i}.png`);
     } else if (d.id === 2) {
       for (let i = 1; i <= 4; i++) images.push(`icemachine${i}.png`);
     }
-
-    // 2. 서버 DB 이미지 추가
     if (d.images && Array.isArray(d.images)) {
       d.images.forEach((img) => {
         if (img.image_url) images.push(img.image_url);
       });
     }
-
     if (images.length === 0 && d.thumbnail) images.push(d.thumbnail);
     return images;
   }, [d]);
 
   if (!d) return null;
 
-  const currentTitle = i18n.language === "ko" ? d.title_ko : d.title_en;
+  const currentTitle =
+    i18n.language === "ko" ? d.title_ko || d.title : d.title_en || d.title;
   const currentMyTasks = i18n.language === "ko" ? d.my_tasks_ko : d.my_tasks_en;
 
   const getAssetUrl = (fileName) => {
@@ -69,11 +86,7 @@ const ProjectModal = ({ project, onClose }) => {
 
   return (
     <Portal>
-      {/* 핵심 수정: 
-        SCSS에서 .project-modal { &__overlay { ... } } 구조이므로 
-        최상위 div에 project-modal 클래스를 명시해야 스타일이 적용됩니다.
-      */}
-      <div className="project-modal">
+      <div className="project-modal-container">
         <motion.div
           className="project-modal__overlay"
           initial={{ opacity: 0 }}
@@ -83,8 +96,9 @@ const ProjectModal = ({ project, onClose }) => {
         >
           <motion.div
             className="project-modal__content"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
             onClick={(e) => e.stopPropagation()}
           >
             <button className="project-modal__close" onClick={onClose}>
@@ -93,22 +107,30 @@ const ProjectModal = ({ project, onClose }) => {
 
             <div className="project-modal__header">
               <h2 className="project-modal__title">{currentTitle}</h2>
-              <p className="project-modal__period">LOG_DATE: {d.period}</p>
+              <p className="project-modal__period">
+                LOG_DATE: {d.period || "UNDEFINED"}
+              </p>
             </div>
 
             <div className="project-modal__body">
               <div className="project-modal__image-gallery">
                 <AnimatePresence mode="wait">
-                  <motion.img
-                    key={currentImageIndex}
-                    src={getAssetUrl(displayImages[currentImageIndex])}
-                    alt="Project View"
-                    className="project-modal__main-image"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                  />
+                  {displayImages.length > 0 ? (
+                    <motion.img
+                      key={displayImages[currentImageIndex]}
+                      src={getAssetUrl(displayImages[currentImageIndex])}
+                      alt="Project View"
+                      className="project-modal__main-image"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    />
+                  ) : (
+                    <div className="project-modal__no-image">
+                      NO_SYSTEM_IMAGE
+                    </div>
+                  )}
                 </AnimatePresence>
 
                 {displayImages.length > 1 && (
@@ -131,19 +153,30 @@ const ProjectModal = ({ project, onClose }) => {
 
               <div className="project-modal__info">
                 <p className="project-modal__description">{d.role_summary}</p>
-
                 <div className="project-modal__tags">
-                  {d.tech_stack?.map((tech) => (
-                    <span key={tech} className="project-modal__tag">
+                  {techStacks.map((tech, idx) => (
+                    <span
+                      key={`modal-tech-${idx}`}
+                      className="project-modal__tag"
+                    >
                       [{tech}]
                     </span>
                   ))}
                 </div>
 
                 {currentMyTasks && (
-                  <div className="project-modal__section">
+                  <div
+                    className={`project-modal__section ${isFocused ? "project-modal__section--focused" : ""}`}
+                    onMouseEnter={() => setIsFocused(true)}
+                    onMouseLeave={() => setIsFocused(false)}
+                  >
                     <h3>TASK_DETAILS</h3>
-                    <p>{currentMyTasks}</p>
+                    <div className="project-modal__task-wrapper">
+                      <p className="project-modal__task-text">
+                        {currentMyTasks}
+                      </p>
+                      <div className="project-modal__input-border"></div>
+                    </div>
                   </div>
                 )}
               </div>
