@@ -1,4 +1,4 @@
-@import '../../styles/constants/_colors.scss';
+@import "../../styles/constants/_colors.scss";
 
 .projects {
   padding: 6rem 2rem;
@@ -16,7 +16,7 @@
     text-align: center;
     margin-bottom: 4rem;
     color: $text-primary;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     letter-spacing: 3px;
     text-transform: uppercase;
 
@@ -25,7 +25,7 @@
     }
   }
 
-  /* Admin Actions - Added styles */
+  /* Admin Actions */
   .admin-actions {
     display: flex;
     justify-content: flex-end;
@@ -48,7 +48,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     text-transform: uppercase;
     letter-spacing: 1px;
     box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
@@ -80,7 +80,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
-    margin-top: 1rem;
+    margin-top: 1rem; // 버튼들 사이의 간격
   }
 
   .admin-button.edit-button {
@@ -110,12 +110,12 @@
       box-shadow: $glow-red;
     }
   }
-  /* End Admin Actions - Added styles */
 
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2rem;
+    align-items: stretch; // 임~ 코멘트: 모든 카드의 높이를 동일하게 맞춤
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
@@ -130,9 +130,11 @@
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
+    display: flex; // 임~ 코멘트: 카드 내부 요소 정렬을 위해 flex 적용
+    flex-direction: column;
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
@@ -158,6 +160,7 @@
   &__card-image {
     width: 100%;
     height: 200px;
+    flex-shrink: 0; // 임~ 코멘트: 이미지 높이 고정
     overflow: hidden;
     background: $bg-dark;
     position: relative;
@@ -180,42 +183,17 @@
     }
   }
 
-  &__card-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 0, 255, 0.1));
-    position: relative;
-  }
-
-  &__card-placeholder-text {
-    color: $neon-cyan;
-    font-family: 'Courier New', monospace;
-    font-size: 0.875rem;
-    text-shadow: $glow-cyan;
-    animation: blink 1.5s infinite;
-  }
-
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.3;
-    }
-  }
-
   &__card-content {
     padding: 1.5rem;
     position: relative;
     z-index: 2;
+    display: flex; // 임~ 코멘트: 하단 버튼을 밀어내기 위해 flex 설정
+    flex-direction: column;
+    flex-grow: 1; // 임~ 코멘트: 남는 공간을 모두 차지함
   }
 
   &__card-serial {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 0.75rem;
     color: $neon-yellow;
     text-shadow: $glow-yellow;
@@ -229,7 +207,7 @@
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: $text-primary;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     letter-spacing: 1px;
   }
 
@@ -244,7 +222,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   &__card-tag {
@@ -254,7 +232,7 @@
     border: 1px solid $neon-cyan;
     font-size: 0.75rem;
     font-weight: 500;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all 0.3s ease;
@@ -267,6 +245,12 @@
     }
   }
 
+  /* Footer area contains button and admin actions */
+  &__card-footer {
+    margin-top: auto; // 임~ 코멘트: 이 설정이 하단 정렬의 핵심입니다.
+    width: 100%;
+  }
+
   &__card-button {
     width: 100%;
     padding: 0.75rem;
@@ -276,15 +260,16 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     text-transform: uppercase;
     letter-spacing: 2px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    margin-top: auto; // 임~ 코멘트: 버튼만 있을 경우를 대비
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: -100%;
@@ -319,7 +304,7 @@
   &__loading-text,
   &__error-text,
   &__empty-text {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 1.25rem;
     color: $neon-cyan;
     text-shadow: $glow-cyan;

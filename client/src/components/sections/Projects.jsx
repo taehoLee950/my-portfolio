@@ -10,8 +10,10 @@ import ProjectModal from "../common/ProjectModal";
 import ProjectFormModal from "../admin/ProjectFormModal";
 import "./Projects.scss";
 
-// 임~ 코멘트: assets/images 폴더 내의 이미지를 한 번에 불러오기
-const projectImages = import.meta.glob("../../assets/images/*.{png,jpg,jpeg,webp}", { eager: true });
+const projectImages = import.meta.glob(
+  "../../assets/images/*.{png,jpg,jpeg,webp}",
+  { eager: true },
+);
 
 const Projects = () => {
   const { t, i18n } = useTranslation();
@@ -35,16 +37,38 @@ const Projects = () => {
     setProjectToEdit(null);
   };
 
+  // 임~ 코멘트: tech_stack이 문자열로 올 경우를 대비해 배열로 변환하는 헬퍼 함수
+  const safeParseTechStack = (techStack) => {
+    if (Array.isArray(techStack)) return techStack;
+    if (typeof techStack === "string") {
+      try {
+        // JSON 문자열 형태인 경우 파싱
+        const parsed = JSON.parse(techStack);
+        return Array.isArray(parsed) ? parsed : [techStack];
+      } catch (e) {
+        // 일반 쉼표 구분 문자열인 경우 분리
+        return techStack.split(",").map((item) => item.trim());
+      }
+    }
+    return [];
+  };
+
   return (
     <section id="projects" className="projects">
       <div className="projects__container">
         <header className="projects__header">
-          <h2 className="projects__title neon-text" data-text={t("projects.title")}>
+          <h2
+            className="projects__title neon-text"
+            data-text={t("projects.title")}
+          >
             {t("projects.title")}
           </h2>
           {isAuthenticated && (
             <div className="admin-actions">
-              <button onClick={() => setIsFormModalOpen(true)} className="admin-button add-button">
+              <button
+                onClick={() => setIsFormModalOpen(true)}
+                className="admin-button add-button"
+              >
                 [+] NEW_PROJECT
               </button>
             </div>
@@ -54,16 +78,15 @@ const Projects = () => {
         <div className="projects__grid">
           {projects && projects.length > 0 ? (
             projects.map((project, index) => {
-              const currentTitle = i18n.language === "ko" ? project.title_ko : project.title_en;
-              
-              /**
-               * 임~ 코멘트: icemachine1~4.png 매핑 로직
-               * 1. DB에 thumbnail 파일명이 있으면 그걸 사용
-               * 2. 없으면 index를 활용해 순환 매칭 (1, 2, 3, 4, 1, 2...)
-               */
-              const imageNum = (index % 4) + 1; // 1부터 4까지 반복
+              const currentTitle =
+                i18n.language === "ko" ? project.title_ko : project.title_en;
+              const imageNum = (index % 4) + 1;
               const fileName = project.thumbnail || `icemachine${imageNum}.png`;
-              const imageSrc = projectImages[`../../assets/images/${fileName}`]?.default;
+              const imageSrc =
+                projectImages[`../../assets/images/${fileName}`]?.default;
+
+              // 임~ 코멘트: 렌더링 직전에 안전하게 배열로 변환
+              const techStacks = safeParseTechStack(project.tech_stack);
 
               return (
                 <motion.div
@@ -74,7 +97,10 @@ const Projects = () => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <div className="projects__card-image" onClick={() => setSelectedProject(project)}>
+                  <div
+                    className="projects__card-image"
+                    onClick={() => setSelectedProject(project)}
+                  >
                     {imageSrc ? (
                       <img src={imageSrc} alt={currentTitle} loading="lazy" />
                     ) : (
@@ -87,34 +113,54 @@ const Projects = () => {
 
                   <div className="projects__card-content">
                     <div className="projects__card-serial">
-                      PROJ_{String(project.id).padStart(4, "0")} / v.{project.version}
+                      PROJ_{String(project.id).padStart(4, "0")} / v.
+                      {project.version}
                     </div>
                     <h3 className="projects__card-title">{currentTitle}</h3>
                     <p className="projects__card-description">
-                      {i18n.language === "ko" ? project.role_summary : project.role_summary}
+                      {i18n.language === "ko"
+                        ? project.role_summary
+                        : project.role_summary}
                     </p>
 
                     <div className="projects__card-tags">
-                      {project.tech_stack?.map((tech) => (
-                        <span key={tech} className="projects__card-tag">#{tech}</span>
+                      {/* 임~ 코멘트: 안전하게 변환된 techStacks 배열 사용 */}
+                      {techStacks.map((tech, idx) => (
+                        <span
+                          key={`${project.id}-${idx}`}
+                          className="projects__card-tag"
+                        >
+                          #{tech}
+                        </span>
                       ))}
                     </div>
 
                     <div className="projects__card-footer">
-                      <button className="projects__card-button" onClick={() => setSelectedProject(project)}>
+                      <button
+                        className="projects__card-button"
+                        onClick={() => setSelectedProject(project)}
+                      >
                         {t("projects.viewDetail")}
                       </button>
 
                       {isAuthenticated && (
                         <div className="admin-project-actions">
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); setProjectToEdit(project); setIsFormModalOpen(true); }} 
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setProjectToEdit(project);
+                              setIsFormModalOpen(true);
+                            }}
                             className="admin-button edit-button"
                           >
                             EDIT
                           </button>
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); dispatch(deleteProject(project.id)); }} 
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (window.confirm("정말 삭제하시겠습니까?"))
+                                dispatch(deleteProject(project.id));
+                            }}
                             className="admin-button delete-button"
                           >
                             DEL
@@ -133,8 +179,18 @@ const Projects = () => {
       </div>
 
       <AnimatePresence>
-        {selectedProject && <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
-        {isFormModalOpen && <ProjectFormModal project={projectToEdit} onClose={handleCloseFormModal} />}
+        {selectedProject && (
+          <ProjectModal
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        )}
+        {isFormModalOpen && (
+          <ProjectFormModal
+            project={projectToEdit}
+            onClose={handleCloseFormModal}
+          />
+        )}
       </AnimatePresence>
     </section>
   );
