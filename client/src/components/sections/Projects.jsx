@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   fetchProjects,
   deleteProject,
-} from "../../store/slices/projectSlice.js";
+} from "../../store/slices/projectSlice.js"; // ../../store/slices/projectSlice.js
 import ProjectModal from "../common/ProjectModal";
 import ProjectFormModal from "../admin/ProjectFormModal";
 import "./Projects.scss";

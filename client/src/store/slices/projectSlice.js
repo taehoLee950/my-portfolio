@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { projectService } from "../../api/services/projectService";
 
-// 프로젝트 목록 조회
+// 1. 프로젝트 목록 조회
 export const fetchProjects = createAsyncThunk(
   "projects/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
       const response = await projectService.getProjects();
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch projects",
@@ -16,13 +16,28 @@ export const fetchProjects = createAsyncThunk(
   },
 );
 
-// 프로젝트 생성 (관리자용)
+// 2. 프로젝트 상세 조회 (Slug 기준)
+export const fetchProjectBySlug = createAsyncThunk(
+  "projects/fetchBySlug",
+  async (slug, { rejectWithValue }) => {
+    try {
+      const response = await projectService.getProjectBySlug(slug);
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch project detail",
+      );
+    }
+  },
+);
+
+// 3. 프로젝트 생성
 export const createProject = createAsyncThunk(
   "projects/create",
   async (projectData, { rejectWithValue }) => {
     try {
       const response = await projectService.createProject(projectData);
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to create project",
@@ -31,13 +46,13 @@ export const createProject = createAsyncThunk(
   },
 );
 
-// 프로젝트 수정 (관리자용)
+// 4. 프로젝트 수정
 export const updateProject = createAsyncThunk(
   "projects/update",
-  async ({ id, data, version }, { rejectWithValue }) => {
+  async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await projectService.updateProject(id, data, version);
-      return response.data;
+      const response = await projectService.updateProject(id, data);
+      return response;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to update project",
@@ -46,13 +61,13 @@ export const updateProject = createAsyncThunk(
   },
 );
 
-// 프로젝트 삭제 (관리자용)
+// 5. 프로젝트 삭제 [복구]
 export const deleteProject = createAsyncThunk(
   "projects/delete",
   async (id, { rejectWithValue }) => {
     try {
       await projectService.deleteProject(id);
-      return id;
+      return id; // 삭제는 ID만 반환
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to delete project",
@@ -61,7 +76,7 @@ export const deleteProject = createAsyncThunk(
   },
 );
 
-// 프로젝트 이미지 추가 (관리자용)
+// 6. 이미지 추가 [복구]
 export const addProjectImage = createAsyncThunk(
   "projects/addImage",
   async ({ projectId, imageFile }, { rejectWithValue }) => {
@@ -79,23 +94,9 @@ export const addProjectImage = createAsyncThunk(
   },
 );
 
-// 프로젝트 이미지 삭제 (관리자용)
-export const deleteProjectImage = createAsyncThunk(
-  "projects/deleteImage",
-  async ({ projectId, imageId }, { rejectWithValue }) => {
-    try {
-      await projectService.deleteProjectImage(imageId);
-      return { projectId, imageId };
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to delete project image",
-      );
-    }
-  },
-);
-
 const initialState = {
   projects: [],
+  currentProject: null,
   loading: "idle",
   error: null,
 };
@@ -107,82 +108,64 @@ const projectSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    clearCurrentProject: (state) => {
+      state.currentProject = null;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProjects.pending, (state) => {
-        state.loading = "pending";
-        state.error = null;
-      })
+      // 목록 조회
       .addCase(fetchProjects.fulfilled, (state, action) => {
         state.loading = "succeeded";
-        // 백엔드 응답이 { data: [...] } 형식이므로 .data를 참조합니다.
-        state.projects = action.payload.data || action.payload;
+        state.projects = action.payload.data || [];
       })
-      .addCase(fetchProjects.rejected, (state, action) => {
-        state.loading = "failed";
-        state.error = action.payload;
+      // 상세 조회
+      .addCase(fetchProjectBySlug.fulfilled, (state, action) => {
+        state.loading = "succeeded";
+        state.currentProject = action.payload.data;
       })
-      .addCase(createProject.pending, (state) => {
-        state.loading = "pending";
-        state.error = null;
-      })
+      // 생성
       .addCase(createProject.fulfilled, (state, action) => {
         state.loading = "succeeded";
-        const newProject = action.payload.data || action.payload;
-        state.projects.unshift(newProject);
+        const newProject = action.payload.data;
+        if (newProject) state.projects.unshift(newProject);
       })
-      .addCase(createProject.rejected, (state, action) => {
-        state.loading = "failed";
-        state.error = action.payload;
-      })
-      .addCase(updateProject.pending, (state) => {
-        state.loading = "pending";
-        state.error = null;
-      })
+      // 수정
       .addCase(updateProject.fulfilled, (state, action) => {
         state.loading = "succeeded";
-        const updated = action.payload.data || action.payload;
-        const index = state.projects.findIndex((p) => p.id === updated.id);
-        if (index !== -1) {
-          state.projects[index] = updated;
+        const updated = action.payload.data;
+        if (updated) {
+          const index = state.projects.findIndex((p) => p.id === updated.id);
+          if (index !== -1) state.projects[index] = updated;
+          if (state.currentProject?.id === updated.id)
+            state.currentProject = updated;
         }
       })
-      .addCase(updateProject.rejected, (state, action) => {
-        state.loading = "failed";
-        state.error = action.payload;
-      })
-      .addCase(deleteProject.pending, (state) => {
-        state.loading = "pending";
-        state.error = null;
-      })
+      // 삭제 [복구]
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.loading = "succeeded";
         state.projects = state.projects.filter((p) => p.id !== action.payload);
       })
-      .addCase(deleteProject.rejected, (state, action) => {
-        state.loading = "failed";
-        state.error = action.payload;
-      })
+      // 이미지 추가 [복구]
       .addCase(addProjectImage.fulfilled, (state, action) => {
         const { projectId, image } = action.payload;
-        const imgData = image.data || image;
         const project = state.projects.find((p) => p.id === projectId);
         if (project) {
           project.images = project.images
-            ? [...project.images, imgData]
-            : [imgData];
+            ? [...project.images, image]
+            : [image];
         }
       })
-      .addCase(deleteProjectImage.fulfilled, (state, action) => {
-        const { projectId, imageId } = action.payload;
-        const project = state.projects.find((p) => p.id === projectId);
-        if (project && project.images) {
-          project.images = project.images.filter((img) => img.id !== imageId);
-        }
-      });
+      // Rejected 케이스 공통 처리
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.loading = "failed";
+          state.error = action.payload;
+        },
+      );
   },
 });
 
-export const { clearError } = projectSlice.actions;
+export const { clearError, clearCurrentProject } = projectSlice.actions;
 export default projectSlice.reducer;
