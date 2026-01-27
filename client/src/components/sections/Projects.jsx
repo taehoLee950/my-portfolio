@@ -10,11 +10,6 @@ import ProjectModal from "../common/ProjectModal";
 import ProjectFormModal from "../admin/ProjectFormModal";
 import "./Projects.scss";
 
-const projectImages = import.meta.glob(
-  "../../assets/images/*.{png,jpg,jpeg,webp}",
-  { eager: true },
-);
-
 const Projects = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
@@ -25,11 +20,29 @@ const Projects = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState(null);
 
+  // API 서버 주소 설정 (환경변수 활용)
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
   useEffect(() => {
     if (loading === "idle") {
       dispatch(fetchProjects());
     }
   }, [dispatch, loading]);
+
+  /**
+   * 이미지 URL 처리 함수
+   * project_images 테이블(project.images)에서 데이터를 가져옵니다.
+   */
+  const getImageUrl = (project) => {
+    // 백엔드 Repository의 include: [ProjectImage]를 통해 넘어온 데이터 확인
+    if (project.images && project.images.length > 0) {
+      // sort_order 기준 첫 번째 이미지를 썸네일로 사용
+      const path = project.images[0].image_url;
+      // 상대 경로일 경우 API 서버 주소와 결합
+      return path.startsWith("http") ? path : `${API_BASE_URL}${path}`;
+    }
+    return null;
+  };
 
   const handleCloseFormModal = () => {
     setIsFormModalOpen(false);
@@ -79,15 +92,13 @@ const Projects = () => {
             projects.map((project, index) => {
               const currentTitle =
                 i18n.language === "ko" ? project.title_ko : project.title_en;
-              const imageNum = (index % 4) + 1;
-              const fileName = project.thumbnail || `icemachine${imageNum}.png`;
-              const imageSrc =
-                projectImages[`../../assets/images/${fileName}`]?.default;
+
+              // 서버 DB(project_images 테이블)에서 가져온 이미지 경로 결정
+              const imageSrc = getImageUrl(project);
               const techStacks = safeParseTechStack(project.tech_stack);
 
               return (
                 <motion.div
-                  // 임~ 코멘트: 중복 키 방지를 위해 ID와 인덱스 조합
                   key={`proj-card-${project.id || index}`}
                   className="projects__card"
                   initial={{ opacity: 0, y: 20 }}
@@ -102,10 +113,12 @@ const Projects = () => {
                     {imageSrc ? (
                       <img src={imageSrc} alt={currentTitle} loading="lazy" />
                     ) : (
-                      <div className="projects__card-placeholder">NO_IMAGE</div>
+                      <div className="projects__card-placeholder">
+                        NO_SYSTEM_IMAGE
+                      </div>
                     )}
                     <div className="projects__card-overlay">
-                      <span className="view-text">VIEW_SYSTEM_DATA</span>
+                      <span className="view-text">ACCESS_SYSTEM_DATA</span>
                     </div>
                   </div>
 

@@ -1,5 +1,5 @@
-import asyncHandler from '../utils/asyncHandler.js';
-import projectService from '../services/projectService.js';
+import asyncHandler from "../utils/asyncHandler.js";
+import projectService from "../services/projectService.js";
 
 const projectController = {
   // 모든 프로젝트 조회
@@ -7,7 +7,7 @@ const projectController = {
     const projects = await projectService.getAllProjects();
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: projects,
     });
   }),
@@ -18,104 +18,119 @@ const projectController = {
     const project = await projectService.getProjectBySlug(slug);
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: project,
     });
   }),
 
-  // 프로젝트 생성 (관리자용, 이미지 업로드 포함)
+  // 프로젝트 생성 (여러 이미지 업로드 처리)
   createProject: asyncHandler(async (req, res, next) => {
     const projectData = { ...req.body };
-    
-    // 이미지 파일이 있으면 URL 생성
-    if (req.file) {
-      const imageUrl = `/api/static/${req.file.filename}`;
-      const project = await projectService.createProject(projectData);
-      
-      // 썸네일 이미지 추가
-      await projectService.addProjectImage(project.id, {
-        image_url: imageUrl,
-        sort_order: 0,
+
+    // 1. 기본 프로젝트 정보 생성
+    const project = await projectService.createProject(projectData);
+
+    // 2. [수정] 여러 이미지 파일 처리 (req.files 사용)
+    if (req.files && req.files.length > 0) {
+      const imagePromises = req.files.map((file, index) => {
+        const imageUrl = `/api/static/${file.filename}`;
+        return projectService.addProjectImage(project.id, {
+          image_url: imageUrl,
+          sort_order: index, // 업로드 순서대로 인덱스 부여
+        });
       });
-      
-      const projectWithImage = await projectService.getProjectById(project.id);
-      return res.status(201).json({
-        status: 'success',
-        data: projectWithImage,
-      });
+
+      await Promise.all(imagePromises);
     }
 
-    const project = await projectService.createProject(projectData);
+    const projectWithImages = await projectService.getProjectById(project.id);
     res.status(201).json({
-      status: 'success',
-      data: project,
+      status: "success",
+      data: projectWithImages,
     });
   }),
 
-  // 프로젝트 수정 (관리자용, 낙관적 락)
+  // 프로젝트 수정 (낙관적 락)
   updateProject: asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const { version } = req.body;
 
     if (version === undefined) {
       return res.status(400).json({
-        status: 'fail',
-        message: 'Version is required for update',
+        status: "fail",
+        message: "Version is required for update",
       });
     }
 
-    const project = await projectService.updateProject(id, req.body, version);
+    // 프로젝트 정보 업데이트
+    await projectService.updateProject(id, req.body, version);
 
+    // [수정] 수정 시에도 이미지가 추가로 들어왔을 경우 처리
+    if (req.files && req.files.length > 0) {
+      const imagePromises = req.files.map((file, index) => {
+        const imageUrl = `/api/static/${file.filename}`;
+        return projectService.addProjectImage(id, {
+          image_url: imageUrl,
+          sort_order: index,
+        });
+      });
+      await Promise.all(imagePromises);
+    }
+
+    const updatedProject = await projectService.getProjectById(id);
     res.status(200).json({
-      status: 'success',
-      data: project,
+      status: "success",
+      data: updatedProject,
     });
   }),
 
-  // 프로젝트 삭제 (관리자용)
+  // 프로젝트 삭제
   deleteProject: asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     await projectService.deleteProject(id);
 
     res.status(200).json({
-      status: 'success',
-      message: 'Project deleted successfully',
+      status: "success",
+      message: "Project deleted successfully",
     });
   }),
 
-  // 이미지 추가 (관리자용, 파일 업로드)
+  // 이미지 추가 (여러 장 한 번에 추가 가능하도록 변경)
   addProjectImage: asyncHandler(async (req, res, next) => {
     const { projectId } = req.params;
-    
-    if (!req.file) {
+
+    // [수정] req.files 확인
+    if (!req.files || req.files.length === 0) {
       return res.status(400).json({
-        status: 'fail',
-        message: 'Image file is required',
+        status: "fail",
+        message: "Image files are required",
       });
     }
 
-    const imageUrl = `/api/static/${req.file.filename}`;
-    const imageData = {
-      image_url: imageUrl,
-      sort_order: req.body.sort_order || 0,
-    };
+    const imagePromises = req.files.map((file, index) => {
+      const imageUrl = `/api/static/${file.filename}`;
+      return projectService.addProjectImage(projectId, {
+        image_url: imageUrl,
+        sort_order: req.body.sort_order || index,
+      });
+    });
 
-    const image = await projectService.addProjectImage(projectId, imageData);
+    const savedImages = await Promise.all(imagePromises);
 
     res.status(201).json({
-      status: 'success',
-      data: image,
+      status: "success",
+      data: savedImages,
     });
   }),
 
-  // 이미지 삭제 (관리자용)
+  // 이미지 삭제
   deleteProjectImage: asyncHandler(async (req, res, next) => {
     const { imageId } = req.params;
     await projectService.deleteProjectImage(imageId);
 
     res.status(200).json({
-      status: 'success',
-      message: 'Image deleted successfully',
+      status: "success",
+      message: "Image deleted successfully",
     });
   }),
 };

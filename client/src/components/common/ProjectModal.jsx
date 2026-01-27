@@ -4,22 +4,23 @@ import { useTranslation } from "react-i18next";
 import Portal from "./Portal";
 import "./ProjectModal.scss";
 
-const assetImages = import.meta.glob(
-  "../../assets/images/*.{png,jpg,jpeg,webp}",
-  { eager: true },
-);
+// [제거] 로컬 자산 glob 설정은 더 이상 사용하지 않습니다.
+// const assetImages = import.meta.glob(...)
 
 const ProjectModal = ({ project, onClose }) => {
   const { i18n } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // API 서버 주소 설정
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
   useEffect(() => {
     setCurrentImageIndex(0);
-    // 모달 오픈 시 스크롤 방지
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = "unset");
   }, [project]);
 
+  // 데이터 안전 추출
   const d = useMemo(() => {
     if (!project) return null;
     return project.data && typeof project.data === "object"
@@ -27,6 +28,7 @@ const ProjectModal = ({ project, onClose }) => {
       : project;
   }, [project]);
 
+  // 기술 스택 파싱 로직
   const techStacks = useMemo(() => {
     if (!d?.tech_stack) return [];
     if (Array.isArray(d.tech_stack)) return d.tech_stack;
@@ -44,29 +46,44 @@ const ProjectModal = ({ project, onClose }) => {
     return [];
   }, [d]);
 
+  /**
+   * [수정] 갤러리에 표시할 이미지 URL 배열 생성
+   * project_images 테이블에서 온 images 배열을 활용합니다.
+   */
   const displayImages = useMemo(() => {
     if (!d) return [];
-    const images = [];
+
+    const imageUrls = [];
+
+    // 1. project_images 테이블의 데이터를 우선적으로 담음
     if (d.images && Array.isArray(d.images)) {
-      d.images.forEach((img) => img.image_url && images.push(img.image_url));
+      d.images.forEach((img) => {
+        if (img.image_url) {
+          // 서버 주소가 포함되지 않은 상대 경로일 경우 결합
+          const fullPath = img.image_url.startsWith("http")
+            ? img.image_url
+            : `${API_BASE_URL}${img.image_url}`;
+          imageUrls.push(fullPath);
+        }
+      });
     }
-    if (images.length === 0 && d.thumbnail) images.push(d.thumbnail);
-    return images;
-  }, [d]);
+
+    // 2. 만약 images 배열이 비어있고 레거시 thumbnail 필드가 있다면 추가
+    if (imageUrls.length === 0 && d.thumbnail) {
+      const thumbPath = d.thumbnail.startsWith("http")
+        ? d.thumbnail
+        : `${API_BASE_URL}${d.thumbnail}`;
+      imageUrls.push(thumbPath);
+    }
+
+    return imageUrls;
+  }, [d, API_BASE_URL]);
 
   if (!d) return null;
 
   const currentTitle =
     i18n.language === "ko" ? d.title_ko || d.title : d.title_en || d.title;
   const currentMyTasks = i18n.language === "ko" ? d.my_tasks_ko : d.my_tasks_en;
-
-  const getAssetUrl = (fileName) => {
-    if (!fileName) return "";
-    const fullPath = Object.keys(assetImages).find((key) =>
-      key.endsWith(`/${fileName}`),
-    );
-    return fullPath ? assetImages[fullPath].default : fileName;
-  };
 
   const navigateImage = (e, direction) => {
     e.stopPropagation();
@@ -110,11 +127,12 @@ const ProjectModal = ({ project, onClose }) => {
                   {displayImages.length > 0 ? (
                     <motion.img
                       key={displayImages[currentImageIndex]}
-                      src={getAssetUrl(displayImages[currentImageIndex])}
+                      src={displayImages[currentImageIndex]} // [수정] 직접 URL 할당
                       className="project-modal__main-image"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ duration: 0.2 }}
                     />
                   ) : (
                     <div className="project-modal__no-image">
@@ -137,6 +155,10 @@ const ProjectModal = ({ project, onClose }) => {
                     >
                       ›
                     </button>
+                    {/* 현재 슬라이드 위치 표시 */}
+                    <div className="project-modal__counter">
+                      {currentImageIndex + 1} / {displayImages.length}
+                    </div>
                   </>
                 )}
               </div>
