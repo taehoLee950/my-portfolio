@@ -1,318 +1,222 @@
 @import "../../styles/constants/_colors.scss";
 
 .projects {
-  padding: 6rem 2rem;
-  background: $bg-void;
+  padding: 12rem 2rem;
+  background: #00050a;
   position: relative;
+  min-height: 120vh;
+  overflow: hidden;
 
-  &__container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  &__title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 4rem;
-    color: $text-primary;
-    font-family: "Courier New", monospace;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
-  }
-
-  /* Admin Actions */
-  .admin-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    padding-right: 1.5rem;
-
-    @media (max-width: 768px) {
-      justify-content: center;
-      padding-right: 0;
-    }
-  }
-
-  .admin-button {
-    padding: 0.75rem 1.5rem;
-    border: 1px solid;
-    border-radius: 4px;
-    background: transparent;
-    color: $neon-cyan;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: "Courier New", monospace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
-
-    &.add-button {
-      border-color: $neon-green;
-      color: $neon-green;
-      box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
-
-      &:hover {
-        background: $neon-green;
-        color: $bg-void;
-        box-shadow: $glow-green;
-      }
-    }
-
-    &:hover {
-      background: $neon-cyan;
-      color: $bg-void;
-      box-shadow: $glow-cyan;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-  }
-
-  .admin-project-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 1rem; // 버튼들 사이의 간격
-  }
-
-  .admin-button.edit-button {
-    border-color: $neon-yellow;
-    color: $neon-yellow;
-    box-shadow: 0 0 8px rgba(255, 255, 0, 0.3);
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-
-    &:hover {
-      background: $neon-yellow;
-      color: $bg-void;
-      box-shadow: $glow-yellow;
-    }
-  }
-
-  .admin-button.delete-button {
-    border-color: $neon-red;
-    color: $neon-red;
-    box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-
-    &:hover {
-      background: $neon-red;
-      color: $bg-void;
-      box-shadow: $glow-red;
-    }
-  }
-
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
-    align-items: stretch; // 임~ 코멘트: 모든 카드의 높이를 동일하게 맞춤
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  &__card {
-    background: rgba(0, 243, 255, 0.05);
-    border-radius: 0;
-    overflow: hidden;
-    border: 1px solid $border-color;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: flex; // 임~ 코멘트: 카드 내부 요소 정렬을 위해 flex 적용
-    flex-direction: column;
-
-    &::before {
-      content: "";
+  &__cyber-bg {
+    position: absolute;
+    inset: 0;
+    .grid-lines {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border: 1px solid transparent;
-      transition: all 0.3s ease;
-      z-index: 1;
-      pointer-events: none;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background-image:
+        linear-gradient(rgba($neon-cyan, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba($neon-cyan, 0.1) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: perspective(500px) rotateX(60deg);
+      mask-image: radial-gradient(circle, black, transparent 70%);
     }
+  }
 
-    &:hover {
-      border-color: $neon-cyan;
-      box-shadow: $glow-cyan;
+  &__header {
+    margin-bottom: 8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 
-      &::before {
-        border-color: $neon-pink;
-        box-shadow: $glow-pink;
+    .system-path {
+      font-family: "Courier New", monospace;
+      color: $neon-green;
+      margin-top: 1rem;
+      .blink {
+        animation: blink 1s infinite;
       }
     }
   }
 
-  &__card-image {
-    width: 100%;
-    height: 200px;
-    flex-shrink: 0; // 임~ 코멘트: 이미지 높이 고정
-    overflow: hidden;
-    background: $bg-dark;
-    position: relative;
-    filter: sepia(100%) hue-rotate(180deg) saturate(200%);
-    transition: filter 0.5s ease;
-
-    &--hover {
-      filter: none;
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    &:hover img {
-      transform: scale(1.1);
-    }
-  }
-
-  &__card-content {
-    padding: 1.5rem;
-    position: relative;
-    z-index: 2;
-    display: flex; // 임~ 코멘트: 하단 버튼을 밀어내기 위해 flex 설정
-    flex-direction: column;
-    flex-grow: 1; // 임~ 코멘트: 남는 공간을 모두 차지함
-  }
-
-  &__card-serial {
-    font-family: "Courier New", monospace;
-    font-size: 0.75rem;
-    color: $neon-yellow;
-    text-shadow: $glow-yellow;
-    margin-bottom: 0.5rem;
-    opacity: 0.7;
-    letter-spacing: 1px;
-  }
-
-  &__card-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: $text-primary;
-    font-family: "Courier New", monospace;
-    letter-spacing: 1px;
-  }
-
-  &__card-description {
-    color: $text-secondary;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-
-  &__card-tags {
+  &__scatter-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    justify-content: center;
+    gap: 4rem;
+    perspective: 1000px;
   }
 
-  &__card-tag {
-    background: transparent;
-    color: $neon-cyan;
-    padding: 0.25rem 0.75rem;
-    border: 1px solid $neon-cyan;
-    font-size: 0.75rem;
-    font-weight: 500;
-    font-family: "Courier New", monospace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 5px rgba(0, 243, 255, 0.3);
-
-    &:hover {
-      background: $neon-cyan;
-      color: $bg-void;
-      box-shadow: $glow-cyan;
-    }
-  }
-
-  /* Footer area contains button and admin actions */
-  &__card-footer {
-    margin-top: auto; // 임~ 코멘트: 이 설정이 하단 정렬의 핵심입니다.
-    width: 100%;
-  }
-
-  &__card-button {
-    width: 100%;
-    padding: 0.75rem;
-    background: transparent;
-    color: $neon-cyan;
-    border: 1px solid $neon-cyan;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: "Courier New", monospace;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+  &__node {
     position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
-    margin-top: auto; // 임~ 코멘트: 버튼만 있을 경우를 대비
+    width: 300px;
+    cursor: pointer;
 
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: $neon-cyan;
-      transition: left 0.3s ease;
-      z-index: -1;
+    // 이미지의 변칙적 위치 구현 (Scatter effect)
+    &.node-1 {
+      transform: rotate(-3deg) translateY(20px);
+      animation: float 6s ease-in-out infinite;
+    }
+    &.node-2 {
+      transform: rotate(2deg) translateY(-30px);
+      animation: float 5s ease-in-out infinite reverse;
+    }
+    &.node-3 {
+      transform: rotate(-1deg) translateY(40px);
+      animation: float 7s ease-in-out infinite 1s;
+    }
+    &.node-4 {
+      transform: rotate(4deg) translateY(-10px);
+      animation: float 5.5s ease-in-out infinite 0.5s;
     }
 
-    &:hover {
-      color: $bg-void;
-      box-shadow: $glow-cyan;
+    .node-content {
+      background: rgba(0, 10, 20, 0.85);
+      border: 1px solid rgba($neon-cyan, 0.3);
+      padding: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s;
+      clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 90%,
+        90% 100%,
+        0 100%
+      ); // 하단 모서리 깎기
 
-      &::before {
-        left: 0;
+      &:hover {
+        border-color: $neon-pink;
+        box-shadow: 0 0 30px rgba($neon-pink, 0.2);
       }
     }
 
-    &:active {
-      transform: scale(0.98);
+    .node-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.7rem;
+      color: $neon-cyan;
+      border-bottom: 1px solid rgba($neon-cyan, 0.1);
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        background: $neon-green;
+        border-radius: 50%;
+        box-shadow: 0 0 5px $neon-green;
+        margin-left: auto;
+      }
+    }
+
+    .node-image-wrapper {
+      position: relative;
+      height: 180px;
+      margin: 10px 0;
+      background: #000;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.8;
+        transition: 0.5s;
+      }
+      &:hover img {
+        opacity: 1;
+        transform: scale(1.1);
+        filter: contrast(1.2);
+      }
+    }
+
+    .node-info {
+      padding: 10px;
+      .node-title {
+        font-family: "Courier New", monospace;
+        color: #fff;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+    }
+
+    .node-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .access-btn {
+        background: $neon-pink;
+        color: #fff;
+        font-size: 0.6rem;
+        padding: 4px 8px;
+        font-weight: bold;
+      }
+      .version {
+        color: #555;
+        font-size: 0.7rem;
+        font-family: monospace;
+      }
+    }
+
+    .node-connector {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba($neon-cyan, 0.5)
+      );
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -2px;
+        width: 5px;
+        height: 5px;
+        background: $neon-cyan;
+        border-radius: 50%;
+      }
     }
   }
 
-  &__loading,
-  &__error,
-  &__empty {
-    padding: 4rem 2rem;
-    text-align: center;
+  .node-admin {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    button {
+      background: none;
+      border: 1px solid #444;
+      color: #666;
+      font-size: 0.6rem;
+      padding: 3px 8px;
+      cursor: pointer;
+      &:hover {
+        color: #fff;
+        border-color: #fff;
+      }
+    }
   }
+}
 
-  &__loading-text,
-  &__error-text,
-  &__empty-text {
-    font-family: "Courier New", monospace;
-    font-size: 1.25rem;
-    color: $neon-cyan;
-    text-shadow: $glow-cyan;
-    letter-spacing: 2px;
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot, -2deg));
   }
+  50% {
+    transform: translateY(-20px) rotate(var(--rot, 2deg));
+  }
+}
 
-  &__error-text {
-    color: $neon-red;
-    text-shadow: 0 0 10px $neon-red;
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
 }

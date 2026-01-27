@@ -25,6 +25,7 @@
     "lucide-react": "^0.563.0",
     "react-ga4": "^2.1.0",
     "react-i18next": "^16.5.3",
+    "react-parallax-tilt": "^1.7.317",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.0",
     "react-scroll": "^1.9.3",
